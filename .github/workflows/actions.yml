@@ -11,5 +11,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Use Spotify GitHub Action Stats
+      - name: Use Collect Weather Data Action
         uses: GitGinocchio/weather-prediction-github-action@main
