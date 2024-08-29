@@ -56,3 +56,4 @@ runs:
         git add .
         git commit -m "Update weather data"
         git push origin data
+      working-directory: data
