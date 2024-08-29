@@ -15,14 +15,18 @@ def fetch_weather_data(city: str) -> dict:
 
 def save_weather_data(data : dict, timestamp : str) -> None:
     # Crea una cartella per l'orario se non esiste già
-    folder_path = os.path.join(r'data/collected', timestamp)
-    os.makedirs(folder_path, exist_ok=True)
+    data_path = os.path.join(r'data/collected', timestamp)
+    os.makedirs(data_path, exist_ok=True)
 
     # Salva i dati per ogni città in un file separato
     for city, city_data in data.items():
-        file_path = os.path.join(folder_path, f"{city}.json")
+        file_path = os.path.join(data_path, f"{city}.json")
         with open(file_path, 'w') as f:
             json.dump(city_data, f, indent=4)
+
+    with open(f'{data_path}/entities.txt','a') as entities:
+        entities.write(timestamp)
+
 
 def main(args : Namespace) -> None:
     timestamp = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d_%H-%M-%S')
