@@ -6,11 +6,11 @@ This repository combines the power of Artificial Intelligence (AI) and GitHub Ac
 
 ## Description
 
-The goal of this project is to automate the process of obtaining weather data, analyzing it, and making accurate weather forecasts using AI. The system is designed to collect weather data periodically, store it in a separate branch (`data`), and use this data to train an AI model that predicts future weather conditions.
+The goal of this project is to automate the process of obtaining weather data, analyzing it, and making accurate weather forecasts using AI. The system is designed to collect weather data periodically, store it in a separate branch ([data](https://github.com/GitGinocchio/weather-prediction-with-github-actions/tree/data)), and use this data to train an AI model that predicts future weather conditions.
 
 ## Key Features
 
-- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in]() api and stores it in the `data` branch of this repository.
+- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in](https://github.com/chubin/wttr.in) api and stores it in the `data` branch of this repository.
 - **AI-based Weather Forecasting**: The collected data is used to train a machine learning model, which predicts future weather conditions.
 - **Organized Data Management**: The `main` branch contains the core code, while the `data` branch stores all the weather data, keeping the repository clean and efficient.
 - **Customizable Workflow**: The project is designed to be flexible and easily customizable to suit different weather APIs, data analysis methods, and machine learning models.
