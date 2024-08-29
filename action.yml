@@ -17,9 +17,6 @@ inputs:
     required: false
     default: "data: Collecting New Weather Data"
 
-outputs:
-
-
 runs:
   using: "composite"
   steps:
