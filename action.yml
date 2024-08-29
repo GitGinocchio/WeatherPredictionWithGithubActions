@@ -20,8 +20,16 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout
+    - name: Checkout Main Branch
       uses: actions/checkout@v3
+      with:
+        ref: main
+  
+    - name: Checkout Data Branch
+      uses: actions/checkout@v3
+      with:
+        ref: data
+        path: data
 
     - name: Setup Python
       uses: actions/setup-python@v4
