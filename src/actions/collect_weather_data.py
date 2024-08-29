@@ -4,7 +4,7 @@ import requests
 import json
 import os
 
-with open(r"config\sample-cities.json",'r') as f:
+with open(r"config/sample-cities.json",'r') as f:
     config = json.load(f)
 
 def fetch_weather_data(city: str) -> dict:
@@ -15,7 +15,7 @@ def fetch_weather_data(city: str) -> dict:
 
 def save_weather_data(data : dict, timestamp : str) -> None:
     # Crea una cartella per l'orario se non esiste già
-    folder_path = os.path.join(r'data\collected', timestamp)
+    folder_path = os.path.join(r'data/collected', timestamp)
     os.makedirs(folder_path, exist_ok=True)
 
     # Salva i dati per ogni città in un file separato
