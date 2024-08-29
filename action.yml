@@ -49,10 +49,9 @@ runs:
         echo "markdown=$(echo $UPDATE)" >> $GITHUB_OUTPUT
     
     - name: Commit Changes
-      id: "add-and-commit"
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: "${{ inputs.commit_message }}"
-        author_name: "${{ inputs.author_name }}"
-        author_email: "${{ inputs.author_email }}"
-        new_branch: "data"
+      run: |
+        config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m "Update weather data"
+        git push origin data
