@@ -2,7 +2,7 @@ name: Collect Weather Data
 
 on:
   schedule:
-    - cron: '0 6 * * *' # Esegui ogni giorno a mezzanotte UTC
+    - cron: '0 0/2 * * *' # Esegui ogni giorno a mezzanotte UTC
 
   workflow_dispatch: # Permette l'avvio manuale del workflow
 
