@@ -25,6 +25,10 @@ The goal of this project is to automate the process of obtaining weather data, a
 2. **Data Analysis and Forecasting**: `still in development...`
     <!-- An optional GitHub Action (examine-data.yml) can be set up to analyze the data and generate weather forecasts based on the collected data. -->
 
+## Next Features
+
+1. **Garbage Collector**: A procedure for evaluating data after it has been collected, to avoid data duplications
+
 ## Repository Structure
 
 ### Branches
@@ -98,8 +102,6 @@ All weather data is stored in the data branch of this repository. You can switch
 ```bash
 git checkout data
 ```
-
-
 
 ### Contributing
 Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request.
