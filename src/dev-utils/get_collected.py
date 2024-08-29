@@ -22,7 +22,6 @@ def main() -> None:
                     f.write(response.content)
     else:
         raise Exception(f"Failed to get entities file: {response.status_code}")
-    
 
 main()
 

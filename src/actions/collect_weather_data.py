@@ -24,7 +24,7 @@ def save_weather_data(data : dict, timestamp : str) -> None:
         with open(file_path, 'w') as f:
             json.dump(city_data, f, indent=4)
 
-    with open(f'{data_path}/entities.txt','a') as entities:
+    with open('data/collected/entities.txt','a') as entities:
         entities.write(timestamp)
 
 
