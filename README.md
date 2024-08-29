@@ -17,7 +17,7 @@ The goal of this project is to automate the process of obtaining weather data, a
 
 ## How It Works
 ### GitHub Actions Workflow
-1. **Data Collection**: The [`action.yml`](.github\workflows\actions.yml) is triggered every 2 hours. It performs the following steps:
+1. **Data Collection**: The [`action.yml`](github\workflows\actions.yml) is triggered every one hours. It performs the following steps:
 
     - Checks out the main branch to run the Python script for collecting weather data.
     - Checks out the data branch to store the collected data.
@@ -81,9 +81,9 @@ The goal of this project is to automate the process of obtaining weather data, a
 <!-- 
 3. **Configure GitHub Actions:**
 
-   The data collection workflow (```.github\workflows\actions.yml```) is already configured to run every 4 hours. 
+   The data collection workflow (```.github\workflows\actions.yml```) is already configured to run every one hours. 
    You can customize the schedule by modifying the cron expression.
-   The default cron is: ```0 0/2 * * *``` see [Crons Explanation](https://crontab.guru/#0_0/2_*_*_*) for help
+   The default cron is: ```0 0/1 * * *``` see [Crons Explanation](https://crontab.guru/#0_0/2_*_*_*) for help
 -->
 
 #### Running Locally
