@@ -1,5 +1,5 @@
-name: 'Spotify GitHub Action Stats'
-description: 'Show your spotify stats inside your README.md'
+name: 'Collect Weather Data'
+description: 'Collect Weather Data using wttr.in and store it in data/collected '
 branding:
   icon: "activity"
   color: "green"
@@ -15,7 +15,7 @@ inputs:
   commit_message:
     description: "The commit message to use for the commit"
     required: false
-    default: "docs(readme): Update Spotify Stats"
+    default: "data: Collecting New Weather Data"
 
 outputs:
 
