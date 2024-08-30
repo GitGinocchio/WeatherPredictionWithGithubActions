@@ -17,7 +17,7 @@ The goal of this project is to automate the process of obtaining weather data, a
 
 ## How It Works
 ### GitHub Actions Workflow
-1. **Data Collection**: The [`action.yml`](.github/workflows/actions.yml) is triggered every one hour. It performs the following steps:
+1. **Data Collection**: The [`action.yml`](.github/workflows/collect_weather_data.yml) is triggered every one hour. It performs the following steps:
 
     - Checks out the main branch to run the Python script for collecting weather data.
     - Checks out the data branch to store the collected data.
@@ -86,6 +86,7 @@ The goal of this project is to automate the process of obtaining weather data, a
 
     ```bash
     pip install -r action-requirements.txt
+    pip install -r dev-requirements.txt
     ```
 <!-- 
 3. **Configure GitHub Actions:**
@@ -99,7 +100,7 @@ The goal of this project is to automate the process of obtaining weather data, a
     
 to run the data collection script locally:
 ```bash
-python scripts/collect_weather_data.py
+python src/actions/collect_weather_data.py
 ```
 #### Data Storage
 
