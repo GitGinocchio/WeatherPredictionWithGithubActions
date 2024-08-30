@@ -10,7 +10,7 @@ The goal of this project is to automate the process of obtaining weather data, a
 
 ## Key Features
 
-- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in](https://github.com/chubin/wttr.in) api and stores it in the `data` branch of this repository.
+- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in](https://github.com/chubin/wttr.in) api and stores it in the `data` branch of this repository.v
 - **AI-based Weather Forecasting**: The collected data is used to train a machine learning model, which predicts future weather conditions.
 - **Organized Data Management**: The `main` branch contains the core code, while the `data` branch stores all the weather data, keeping the repository clean and efficient.
 - **Customizable Workflow**: The project is designed to be flexible and easily customizable to suit different weather APIs, data analysis methods, and machine learning models.
@@ -37,19 +37,24 @@ The goal of this project is to automate the process of obtaining weather data, a
 - **data**: Stores all the weather data collected by the GitHub Actions. This branch is automatically updated with new data but is kept separate from the main codebase to maintain efficiency.
 
 #### Main Branch
-
 ```python
-├── .github/
-│   ├── workflows/
-│   │   ├── actions.yml                 # GitHub Action for data collection and for data analyzing (optional)
-│   config/
-│   ├── sample-cities.json              # A list of cities considered for data collection
-├── src/
-│   ├── actions/
-│   │   ├── collect_weather_data.py     # Script for collecting weather data
-├── action-requirements.txt             # The python libraries needed to launch the GitHub Action
-├── action.yml                          # Settings for the Github Action
-├── README.md                           # This file
+├───.github/
+│   └──workflows/
+│       └───collect_weather_data.yml # GitHub Action for data collection and for data analyzing
+├───config  # Where all configuration files are saved
+├───models  # Folder where all the pre-trained models are present
+│   ├───best-models
+│   ├───sklearn-models
+│   └───torch-models
+├───src     # Folder where all the source code is present
+│   ├───actions # Folder containing the scripts for the various GitHub Actions
+│   ├───models  # Folder containing scripts for creating separate models for each library
+│   │   ├───sklearn
+│   │   └───torch
+│   └───utils   # Folder containing a set of scripts used for general utilities
+├───action-requirements.txt # Requirements to launch GitHub Actions
+├───action.yml
+└───README.md   # This file : )
 ```
 
 #### Data Branch
