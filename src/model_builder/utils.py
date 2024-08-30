@@ -77,6 +77,7 @@ def fetch_unique_data(directory : str):
                     useful_data['weatherDesc'] = content['current_condition'][0]['weatherDesc'][0]['value']
 
                     useful_data['localObsDateTime'] = datetime.strptime(useful_data['localObsDateTime'], '%Y-%m-%d %I:%M %p')
+                    useful_data['minute'] = useful_data['localObsDateTime'].minute
                     useful_data['hour'] = useful_data['localObsDateTime'].hour
                     useful_data['day'] = useful_data['localObsDateTime'].day
                     useful_data['month'] = useful_data['localObsDateTime'].month
