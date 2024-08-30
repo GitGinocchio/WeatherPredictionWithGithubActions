@@ -34,6 +34,8 @@ def main() -> None:
 				futures = [executor.submit(download_city_data, report, city) for city in config['sample-cities']]
 				for future in futures:
 					future.result()  # Assicurati che eventuali eccezioni vengano sollevate
+		else:
+			print('Data updated successfully.')
 
 	except AssertionError as e:
 		raise AssertionError(f'AssertionError: {e}')

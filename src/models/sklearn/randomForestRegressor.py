@@ -33,8 +33,6 @@ df['weatherDesc_encoded'] = label_encoder.fit_transform(df['weatherDesc'])
 X = df[['minute','hour','day','month','year','latitude','longitude']] #'area_encoded','region_encoded','country_encoded','population'
 y = df.drop(columns=['minute','precipInches','pressureInches','winddirDegree','visibilityMiles','windspeedMiles','weatherCode','FeelsLikeF','temp_F','area','region','country','winddir16Point','hour','month','day','year',"area_encoded","region_encoded","country_encoded","winddir16Point_encoded","weatherDesc","weatherDesc_encoded",'localObsDateTime','population','latitude','longitude'])
 
-
-
 X_train, X_test, y_train, y_test = train_test_split(X,y)
 
 #base_model = RandomForestRegressor()
@@ -42,7 +40,13 @@ X_train, X_test, y_train, y_test = train_test_split(X,y)
 
 #model = LinearRegression()
 
-model = RandomForestRegressor()
+model = RandomForestRegressor(
+    n_estimators=500,
+    n_jobs=-1,
+    verbose=0,
+    criterion='absolute_error',
+    oob_score=True
+    )
 
 #poly = PolynomialFeatures(degree=2)
 #model = make_pipeline(poly, LinearRegression())
@@ -65,10 +69,10 @@ new_data = pd.DataFrame({
     #'area_encoded': [3],  # Sostituisci con i tuoi dati reali
     #'region_encoded': [9],
     #'country_encoded': [7],
-    'minute' : [30],
-    'hour': [21],
-    'day': [31],
-    'month': [8],
+    'minute' : [0],
+    'hour': [19],
+    'day': [1],
+    'month': [9],
     'year': [2024],
     #'population': [3000],
     'latitude': [44.417],
