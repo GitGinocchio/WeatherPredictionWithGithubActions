@@ -6,12 +6,20 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
 
-from utils import fetch_unique_data
+from utils.preprocessing import fetch_unique_data
 
 
 
 data = fetch_unique_data('data/collected')
 df = pd.DataFrame(data)
+
+def try_convert_numeric(val):
+    try:
+        return pd.to_numeric(val)
+    except (ValueError, TypeError):
+        return val
+
+df = df.map(try_convert_numeric)
 
 label_encoder = LabelEncoder()
 
@@ -26,8 +34,8 @@ df['weatherDesc_encoded'] = label_encoder.fit_transform(df['weatherDesc'])
 # Inputs: giorno, ora, mese, anno, area, country, region
 # Outputs: tutto il resto
 
-X = df[['hour','month','day','year','latitude','longitude']] #'area_encoded','region_encoded','country_encoded','population'
-y = df.drop(columns=['precipInches','pressureInches','winddirDegree','visibilityMiles','windspeedMiles','weatherCode','FeelsLikeF','temp_F','area','region','country','winddir16Point','hour','month','day','year',"area_encoded","region_encoded","country_encoded","winddir16Point_encoded","weatherDesc","weatherDesc_encoded",'localObsDateTime','population','latitude','longitude'])
+X = df[['minute','hour','month','day','year','latitude','longitude']] #'area_encoded','region_encoded','country_encoded','population'
+y = df[["FeelsLikeC","cloudcover","humidity","precipMM","pressure","temp_C","uvIndex","visibility","windspeedKmph"]]
 
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=.25)
 
@@ -92,7 +100,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Eseguiamo il training per 100 epoche
-num_epochs = 5000
+num_epochs = 1000
 
 for epoch in range(num_epochs):
     model.train()  # Settiamo il modello in modalità training
@@ -122,13 +130,14 @@ new_data = pd.DataFrame({
     #'area_encoded': [3],  # Sostituisci con i tuoi dati reali
     #'region_encoded': [9],
     #'country_encoded': [7],
+    'minute' : [24],
     'hour': [17],
     'month': [8],
     'day': [31],
     'year': [2024],
     #'population': [3000],
-    'latitude': [41.900],
-    'longitude': [12.483] #11.333
+    'latitude': [45.467],
+    'longitude': [9.200]
 })
 
 result = model(torch.tensor(new_data.to_numpy(), dtype=torch.float32).to("cuda"))
