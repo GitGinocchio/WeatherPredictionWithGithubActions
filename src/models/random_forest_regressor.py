@@ -9,10 +9,10 @@ from sklearn.pipeline import make_pipeline
 
 import pandas as pd
 import numpy as np
+import sys
+import os
 
-from utils import fetch_unique_data
-
-
+from utils.preprocessing import fetch_unique_data
 
 data = fetch_unique_data('data/collected')
 df = pd.DataFrame(data)
@@ -36,17 +36,17 @@ y = df.drop(columns=['minute','precipInches','pressureInches','winddirDegree','v
 X_train, X_test, y_train, y_test = train_test_split(X,y)
 
 #base_model = RandomForestRegressor()
-#model = MultiOutputRegressor(base_model)
 
 #model = LinearRegression()
 
-model = RandomForestRegressor(
+base_model = RandomForestRegressor(
     n_estimators=500,
     n_jobs=-1,
     verbose=0,
     criterion='absolute_error',
     oob_score=True
     )
+model = MultiOutputRegressor(base_model,n_jobs=-1)
 
 #poly = PolynomialFeatures(degree=2)
 #model = make_pipeline(poly, LinearRegression())

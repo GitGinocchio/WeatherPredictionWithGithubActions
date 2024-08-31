@@ -48,10 +48,8 @@ The goal of this project is to automate the process of obtaining weather data, a
 │   └───torch-models
 ├───src     # Folder where all the source code is present
 │   ├───actions # Folder containing the scripts for the various GitHub Actions
-│   ├───models  # Folder containing scripts for creating separate models for each library
-│   │   ├───sklearn
-│   │   └───torch
-│   └───utils   # Folder containing a set of scripts used for general utilities
+│   └───models  # Folder containing scripts for creating separate models for each library
+│       └───utils   # Folder containing a set of scripts used for general utilities
 ├───action-requirements.txt # Requirements to launch GitHub Actions
 ├───action.yml
 └───README.md   # This file : )
