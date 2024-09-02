@@ -31,7 +31,8 @@ def main() -> None:
 
     with open(f'data/collected/entities.txt', 'w') as f:
         for report in os.listdir('data/collected'):
-            if report != 'entities.txt': f.write(report+'\n')
+            if report != 'entities.txt': 
+                f.write(report+'\n')
 
 if __name__ == '__main__':
     main()
