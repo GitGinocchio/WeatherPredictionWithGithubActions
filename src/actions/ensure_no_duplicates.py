@@ -22,11 +22,11 @@ def main() -> None:
 
             if local_obs_time in seen_dates:
                 os.remove(f'data/collected/{report}/{city}.json')
+                if len(os.listdir(f'data/collected/{report}')) == 0:
+                    os.removedirs(f'data/collected/{report}')
             else:
                 seen_dates.add(local_obs_time)
 
-            if len(os.listdir(f'data/collected/{report}')) == 0:
-                os.removedirs(f'data/collected/{report}')
         seen_dates.clear()
 
     with open(f'data/collected/entities.txt', 'w') as f:
