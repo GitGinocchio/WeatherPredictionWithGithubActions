@@ -1,1 +1,0 @@
-y = df[["FeelsLikeC","cloudcover","humidity","precipMM","pressure","temp_C","uvIndex","visibility","windspeedKmph"]]

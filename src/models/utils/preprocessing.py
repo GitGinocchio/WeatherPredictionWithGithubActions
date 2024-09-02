@@ -18,13 +18,18 @@ def fetch_unique_data(directory : str):
 
     return (unique_files, num_total_files)
     """
-
+    sample_cities = config['sample-cities']
+    reports = os.listdir(directory)
     seen_dates = set()
+    num_total_files = len(sample_cities) * len(reports)
     num_unique_files = 0
-    reports = []
 
-    for city in (sample_cities:=config['sample-cities']):
-        for report in (reports:=os.listdir(directory)):
+    for city in sample_cities:
+        for report in reports:
+            if not os.path.exists(f'{directory}/{report}/{city}.json'):
+                num_total_files -= 1
+                continue
+
             with open(f'{directory}/{report}/{city}.json', 'r') as f:
                 content = json.load(f,parse_int=True,parse_float=True)
 
@@ -55,8 +60,12 @@ def fetch_unique_data(directory : str):
 
                 yield useful_data
             else:
+                num_total_files -= 1
+                os.remove(f'{directory}/{report}/{city}.json')
                 pass
                 #print(f"Duplicate reports for city: {city} at: {local_obs_time}")
 
         seen_dates = set()
-    print(f"Unique Files: {num_unique_files}; Total Files: {len(sample_cities) * len(reports) if reports else 0}; Percentage: {(num_unique_files / (len(sample_cities) * len(reports) if reports else 0)) * 100:.2f}%")
+    print(f"Unique Files: {num_unique_files}; Total Files: {num_total_files}; Percentage: {(num_unique_files / (num_total_files)) * 100:.2f}%")
+
+#fetch_unique_data('data/collected')

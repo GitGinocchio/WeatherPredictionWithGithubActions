@@ -27,13 +27,24 @@ def save_weather_data(data : dict, timestamp : str) -> None:
     with open('data/collected/entities.txt','a') as entities:
         entities.write(f'\n{timestamp}')
 
-
 def main(args : Namespace) -> None:
     timestamp = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d_%H-%M-%S')
 
+    seen_dates = set()
     weather_data = {}
     for city in config['sample-cities']:
-        weather_data[city] = fetch_weather_data(city)
+        content = fetch_weather_data(city)
+
+        for report in os.listdir('data/collected'):
+            if not os.path.exists(f'data/collected/{report}/{city}.json'):
+                continue
+
+            local_obs_time = content["current_condition"][0]["localObsDateTime"]
+
+            if local_obs_time in seen_dates: break
+        else:
+            weather_data[city] = content
+        seen_dates.clear()
 
     save_weather_data(weather_data,timestamp)
 

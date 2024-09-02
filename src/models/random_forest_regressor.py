@@ -81,14 +81,14 @@ new_data = pd.DataFrame({
     #'area_encoded': [3],  # Sostituisci con i tuoi dati reali
     #'region_encoded': [9],
     #'country_encoded': [7],
-    'minute' : [26],
-    'hour': [17],
-    'day': [31],
-    'month': [8],
+    'minute' : [0],
+    'hour': [20],
+    'day': [2],
+    'month': [9],
     'year': [2024],
     #'population': [3000],
-    'latitude': [61.218],
-    'longitude': [-149.900] #11.333
+    'latitude': [45.467],
+    'longitude': [9.200] #11.333
 })
 
 new_prediction = model.predict(new_data)

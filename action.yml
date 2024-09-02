@@ -47,7 +47,13 @@ runs:
         UPDATE=$(python ${{ github.action_path }}/src/actions/collect_weather_data.py
         ) || exit 1
         echo "markdown=$(echo $UPDATE)" >> $GITHUB_OUTPUT
-    
+    - name: Cleaning Data (Ensuring no duplicates)
+      id: "ensure-no-duplicates"
+      shell: bash
+      run: |
+        UPDATE=$ (python ${{ github.action_path }}/src/actions/ensure_no_duplicates.py
+        ) || exit 1
+        echo "markdown=$(echo $UPDATE)" >> $GITHUB_OUTPUT
     - name: Commit Changes
       shell: bash
       run: |
