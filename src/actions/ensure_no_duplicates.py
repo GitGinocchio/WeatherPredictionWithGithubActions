@@ -8,6 +8,8 @@ def main() -> None:
     seen_dates = set()
     for city in config['sample-cities']:
         for report in os.listdir('data/collected'):
+            if report == 'entities.txt': continue
+
             if not os.path.exists(f'data/collected/{report}/{city}.json'):
                 if len(os.listdir(f'data/collected/{report}')) == 0:
                     os.removedirs(f'data/collected/{report}')
@@ -26,6 +28,10 @@ def main() -> None:
             if len(os.listdir(f'data/collected/{report}')) == 0:
                 os.removedirs(f'data/collected/{report}')
         seen_dates.clear()
+
+    with open(f'data/collected/entities.txt', 'w') as f:
+        for report in os.listdir('data/collected'):
+            if report != 'entities.txt': f.write(report+'\n')
 
 if __name__ == '__main__':
     main()
