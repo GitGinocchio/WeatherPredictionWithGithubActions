@@ -59,7 +59,15 @@ runs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+        # Aggiungi i file modificati
         git add .
-        git commit -m "Update weather data"
-        git push origin data
+
+        # Verifica se ci sono cambiamenti rispetto al commit precedente
+        if git diff-index --quiet HEAD --; then
+            echo "Nessun cambiamento rilevato, niente da aggiornare."
+        else
+            git commit -m "Update weather data"
+            git push origin data
+        fi
       working-directory: data
