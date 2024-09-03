@@ -10,8 +10,13 @@ with open(r"config/sample-cities.json",'r') as f:
 def fetch_weather_data(city: str) -> dict:
     # Funzione per ottenere i dati meteo per una città
     api_url = f'https://wttr.in/{city}?format=j1'
-    response = requests.get(api_url)
-    return response.json()
+    try:
+        response = requests.get(api_url,timeout=10)
+    except requests.exceptions.ConnectTimeout as e:
+        print(e)
+        return None
+    else:
+        return response.json()
 
 def save_weather_data(data : dict, timestamp : str) -> None:
     # Crea una cartella per l'orario se non esiste già
@@ -34,6 +39,8 @@ def main(args : Namespace) -> None:
     weather_data = {}
     for city in config['sample-cities']:
         content = fetch_weather_data(city)
+
+        if not content: continue
 
         for report in os.listdir('data/collected'):
             if not os.path.exists(f'data/collected/{report}/{city}.json'):
