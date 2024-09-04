@@ -54,6 +54,8 @@ def main(args : Namespace) -> None:
         else:
             weather_data[city] = content
         seen_dates.clear()
+    
+    if len(weather_data) == 0: return
 
     save_weather_data(weather_data,timestamp)
 
