@@ -12,8 +12,11 @@ def fetch_weather_data(city: str) -> dict:
     api_url = f'https://wttr.in/{city}?format=j1'
     try:
         response = requests.get(api_url,timeout=1)
-        if response.apparent_encoding == 'ascii': return None
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout) as e:
+        if response.headers['Content-Type'] != 'application/json' or response.status_code != 200: 
+            print(f'An error occurred while getting weather data for city {city} with state code: {response.status_code}')
+            raise AssertionError(response)
+        print(f'City weather data {city} successfully obtained with status code 200')
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, AssertionError) as e:
         print(f'Error fetching {city} weather data:')
         print(e)
         return None
