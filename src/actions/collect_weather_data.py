@@ -12,6 +12,7 @@ def fetch_weather_data(city: str) -> dict:
     api_url = f'https://wttr.in/{city}?format=j1'
     try:
         response = requests.get(api_url,timeout=1)
+        if response.apparent_encoding == 'ascii': return None
     except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout) as e:
         print(f'Error fetching {city} weather data:')
         print(e)
