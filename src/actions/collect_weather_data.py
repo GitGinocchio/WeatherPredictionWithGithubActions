@@ -1,74 +1,65 @@
 from argparse import ArgumentParser, Namespace
+from concurrent.futures import ThreadPoolExecutor
 import datetime
 import requests
+import asyncio
 import json
 import os
+
+session = requests.Session()
 
 with open(r"config/sample-cities.json",'r') as f:
     config = json.load(f)
 
-def fetch_weather_data(city: str) -> dict:
-    # Funzione per ottenere i dati meteo per una città
+def fetch_city_weather_data(city : str, timestamp : str):
     api_url = f'https://wttr.in/{city}?format=j1'
+
     try:
-        response = requests.get(api_url,timeout=1)
-        if response.headers['Content-Type'] != 'application/json' or response.status_code != 200: 
-            print(f'An error occurred while getting weather data for city {city} with state code: {response.status_code}')
-            raise AssertionError(response)
-        print(f'City weather data {city} successfully obtained with status code 200')
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, AssertionError) as e:
-        print(f'Error fetching {city} weather data:')
-        print(e)
-        return None
-    else:
-        return response.json()
+        response = session.get(api_url, timeout=60)
+        assert response.headers['Content-Type'] == 'application/json', f"Expected Content-Type to be application/json, but got {response.headers['Content-Type']}"
+        
+        current_report = response.json()
 
-def save_weather_data(data : dict, timestamp : str) -> None:
-    # Crea una cartella per l'orario se non esiste già
-    data_path = os.path.join(r'data/collected', timestamp)
-    os.makedirs(data_path, exist_ok=True)
+        current_obs_time = current_report["current_condition"][0]["localObsDateTime"]
 
-    # Salva i dati per ogni città in un file separato
-    for city, city_data in data.items():
-        file_path = os.path.join(data_path, f"{city}.json")
-        with open(file_path, 'w') as f:
-            json.dump(city_data, f, indent=4)
+        for report in os.listdir('data/collected'): # Controllo ogni report
+            if not os.path.exists(f'data/collected/{report}/{city}.json'):
+                continue
 
-    with open('data/collected/entities.txt','a') as entities:
-        entities.write(f'\n{timestamp}')
+            with open(f'data/collected/{report}/{city}.json', 'r') as f:
+                old_report = json.load(f)
+
+            old_obs_time = old_report["current_condition"][0]["localObsDateTime"]
+
+            if old_obs_time == current_obs_time: break
+        else:
+            data_path = os.path.join(r'data/collected', timestamp)
+            os.makedirs(data_path, exist_ok=True)
+            with open(os.path.join(data_path, f"{city}.json"), 'w') as f:
+                json.dump(current_report, f, indent=4)
+
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, AssertionError, json.JSONDecodeError) as e: 
+        print(f'Error fetching {city} weather data:\n{e}')
+
+
 
 def main(args : Namespace) -> None:
     timestamp = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d_%H-%M-%S')
 
-    seen_dates = set()
-    weather_data = {}
-    for city in config['sample-cities']:
-        content = fetch_weather_data(city)
-
-        if not content: continue
-
-        for report in os.listdir('data/collected'):
-            if not os.path.exists(f'data/collected/{report}/{city}.json'):
-                continue
-
-            local_obs_time = content["current_condition"][0]["localObsDateTime"]
-
-            if local_obs_time in seen_dates: break
-        else:
-            weather_data[city] = content
-        seen_dates.clear()
+    with ThreadPoolExecutor() as executor:
+        tasks = [executor.submit(fetch_city_weather_data, city, timestamp) for city in config["sample-cities"]]
     
-    if len(weather_data) == 0: return
+    for task in tasks: task.result()
 
-    save_weather_data(weather_data,timestamp)
-
-
-
+    with open('data/collected/entities.txt','w') as entities:
+        for report in os.listdir('data/collected'):
+            if report == 'entities.txt': continue
+            entities.write(f'{report}\n')
 
 
 if __name__ == '__main__':
     parser = ArgumentParser()
 
     args = parser.parse_args()
-
+    
     main(args)
