@@ -28,6 +28,7 @@ def fetch_city_weather_data(city : str, timestamp : str):
         # Extract the observation time from the current weather report
         current_obs_time = current_report["current_condition"][0]["localObsDateTime"]
 
+        # TODO: (Maybe check only the latest report to avoid duplicates)
         # Loop through all files in the 'data/collected' directory
         for report in os.listdir('data/collected'): 
             # Check if a file with the same city name exists, but not the latest report (based on observation time)
