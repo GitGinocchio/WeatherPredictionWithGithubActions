@@ -53,7 +53,7 @@ def fetch_city_weather_data(city : str, timestamp : str):
                 # Write the current weather report to a new file in the created directory
                 json.dump(current_report, f, indent=4)
 
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, AssertionError, json.JSONDecodeError) as e: 
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, requests.exceptions.SSLError, AssertionError, json.JSONDecodeError) as e: 
         print(f'Error fetching {city} weather data:\n{e}')
 
 
