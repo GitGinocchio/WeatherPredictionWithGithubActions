@@ -42,7 +42,7 @@ df['weatherDesc_encoded'] = weather_desc_encoder.fit_transform(df['weatherDesc']
 # Inputs: giorno, ora, mese, anno, area, country, region
 # Outputs: tutto il resto
 
-X = df[['minute','hour','day','month','year','latitude','longitude',]] #'area_encoded','region_encoded','country_encoded','population' 'year'
+X = df[['minute','hour','day','month','year','latitude','longitude']] #'area_encoded','region_encoded','country_encoded','population'
 y = df[["FeelsLikeC","cloudcover","humidity","precipMM","pressure","temp_C","uvIndex","visibility","windspeedKmph"]]
 #y = df[["humidity"]]
 y_columns = y.columns
@@ -72,10 +72,12 @@ model.fit(X_train,y_train)
 y_pred = model.predict(X_test)
 
 # Calcola le metriche di valutazione
+mse_variable = mean_squared_error(y_test, y_pred,multioutput='raw_values')
 mse = mean_squared_error(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
+print(f'Mean Squared Error per variable: {list(mse_variable)}')
 print(f'Mean Squared Error: {mse}')
 print(f'Mean Absolute Error: {mae}')
 print(f'R² Score: {r2}')
@@ -85,8 +87,8 @@ new_data = pd.DataFrame({
     #'region_encoded': [9],
     #'country_encoded': [7],
     'minute' : [0],
-    'hour': [4],
-    'day': [4],
+    'hour': [13],
+    'day': [14],
     'month': [9],
     'year': [2024],
     #'population': [3000],
