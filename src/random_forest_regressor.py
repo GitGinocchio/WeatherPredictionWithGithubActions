@@ -12,9 +12,9 @@ import numpy as np
 import sys
 import os
 
-from utils.preprocessing import fetch_unique_data
+from utils.dataloader import stream_data_in_memory
 
-data = fetch_unique_data('data/collected')
+data = stream_data_in_memory()
 df : pd.DataFrame = pd.DataFrame(data)
 
 def try_convert_numeric(val):
@@ -28,7 +28,7 @@ df = df.map(try_convert_numeric)
 #print(df.dtypes)
 
 area_encoder = LabelEncoder()
-region_encoder =LabelEncoder()
+region_encoder = LabelEncoder()
 country_encoder = LabelEncoder()
 winddir_encoder = LabelEncoder()
 weather_desc_encoder = LabelEncoder()
@@ -55,12 +55,12 @@ X_train, X_test, y_train, y_test = train_test_split(X,y)
 #model = LinearRegression()
 
 model = RandomForestRegressor(
-    n_estimators=500,
-    n_jobs=-1,
-    verbose=0,
-    criterion='absolute_error',
-    oob_score=True
-    )
+            n_estimators=500,
+            n_jobs=-1,
+            verbose=0,
+            criterion='absolute_error',
+            oob_score=True
+            )
 #model = MultiOutputRegressor(base_model,n_jobs=-1)
 
 #poly = PolynomialFeatures(degree=2)

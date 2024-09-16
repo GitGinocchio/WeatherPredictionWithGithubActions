@@ -6,10 +6,11 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
-from utils.preprocessing import fetch_unique_data
 
-# Caricamento e pre-elaborazione dei dati
-data = fetch_unique_data('data/collected')
+from models.NeuralNetworks import LSTMNetwork
+from utils.dataloader import stream_data_in_memory
+
+data = stream_data_in_memory()
 df = pd.DataFrame(data)
 
 def try_convert_numeric(val):
@@ -26,7 +27,7 @@ for col in categorical_columns:
     df[f'{col}_encoded'] = label_encoder.fit_transform(df[col])
 
 # Selezione delle feature e target
-X = df[['minute', 'hour', 'month', 'day', 'year', 'latitude', 'longitude']] # 'area_encoded', 'region_encoded', 'country_encoded'
+X = df[['minute', 'hour', 'month', 'day', 'year', 'latitude', 'longitude']] #'area_encoded', 'region_encoded', 'country_encoded'
 y = df[["FeelsLikeC", "cloudcover", "humidity", "precipMM", "pressure", "temp_C", "uvIndex", "visibility", "windspeedKmph"]]
 
 # Divisione dei dati e normalizzazione
@@ -39,30 +40,10 @@ X_train_scaled = scaler_X.fit_transform(X_train)
 y_train_scaled = scaler_y.fit_transform(y_train)
 X_test_scaled = scaler_X.transform(X_test)
 
-# Conversione in tensori PyTorch
-X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32).to("cuda")
+# Conversione in tensori PyTorch e ridimensionamento per LSTM
+X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32).unsqueeze(1).to("cuda")
 y_train_tensor = torch.tensor(y_train_scaled, dtype=torch.float32).to("cuda")
-X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to("cuda")
-
-# Definizione del modello
-class ImprovedNN(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim):
-        super(ImprovedNN, self).__init__()
-        self.layer1 = nn.Linear(input_dim, hidden_dim)
-        self.layer2 = nn.Linear(hidden_dim, hidden_dim)
-        self.layer3 = nn.Linear(hidden_dim, hidden_dim)
-        self.output = nn.Linear(hidden_dim, output_dim)
-        self.dropout = nn.Dropout(0.2)
-        self.batch_norm1 = nn.BatchNorm1d(hidden_dim)
-        self.batch_norm2 = nn.BatchNorm1d(hidden_dim)
-        self.batch_norm3 = nn.BatchNorm1d(hidden_dim)
-    
-    def forward(self, x):
-        x = self.dropout(torch.relu(self.batch_norm1(self.layer1(x))))
-        x = self.dropout(torch.relu(self.batch_norm2(self.layer2(x))))
-        x = self.dropout(torch.relu(self.batch_norm3(self.layer3(x))))
-        x = self.output(x)
-        return x
+X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).unsqueeze(1).to("cuda")
 
 # Preparazione del dataset e dataloader
 dataset = TensorDataset(X_train_tensor, y_train_tensor)
@@ -74,19 +55,20 @@ train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=64)
 
 # Inizializzazione del modello e dell'ottimizzatore
-input_dim = X_train_tensor.shape[1]
+input_dim = X_train_tensor.shape[2]
 hidden_dim = 128
 output_dim = y_train_tensor.shape[1]
+num_layers = 2
 
-model = ImprovedNN(input_dim, hidden_dim, output_dim).to("cuda")
+model = LSTMNetwork(input_dim, hidden_dim, output_dim, num_layers).to("cuda")
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=10, factor=0.5)
 
 # Training loop
-num_epochs = 10000
+num_epochs = 1000
 best_val_loss = float('inf')
-patience = 20
+patience = 30
 no_improve = 0
 
 for epoch in range(num_epochs):
@@ -116,7 +98,7 @@ for epoch in range(num_epochs):
     
     if val_loss < best_val_loss:
         best_val_loss = val_loss
-        torch.save(model.state_dict(), 'best_model.pth')
+        torch.save(model.state_dict(), 'best_lstm_model.pth')
         no_improve = 0
     else:
         no_improve += 1
@@ -126,26 +108,26 @@ for epoch in range(num_epochs):
         break
 
 # Caricamento del miglior modello
-model.load_state_dict(torch.load('best_model.pth'))
+model.load_state_dict(torch.load('best_lstm_model.pth',weights_only=True))
 
 # Funzione per fare previsioni
 def predict(model, data):
     model.eval()
     with torch.no_grad():
         scaled_data = scaler_X.transform(data)
-        tensor_data = torch.tensor(scaled_data, dtype=torch.float32).to("cuda")
+        tensor_data = torch.tensor(scaled_data, dtype=torch.float32).unsqueeze(1).to("cuda")
         predictions = model(tensor_data)
         return scaler_y.inverse_transform(predictions.cpu().numpy())
 
 # Esempio di previsione
 new_data = pd.DataFrame({
     'minute': [0],
-    'hour': [8],
+    'hour': [13],
     'month': [9],
-    'day': [9],
+    'day': [17],
     'year': [2024],
-    'latitude': [44.1],
-    'longitude': [10.016667],
+    'latitude': [44.417],
+    'longitude': [8.950],
     #'area_encoded': [3],
     #'region_encoded': [9],
     #'country_encoded': [7]
