@@ -64,18 +64,17 @@ def main(args : Namespace) -> None:
     timestamp = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d_%H-%M-%S')
 
     # Create a ThreadPoolExecutor to run tasks concurrently (e.g., fetching weather data for multiple cities at once)
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=len(config["sample-cities"])) as executor:
         # Define a list of tasks, where each task is a function call to fetch_city_weather_data for a given city and timestamp
         tasks = [executor.submit(fetch_city_weather_data, city, timestamp) for city in config["sample-cities"]]
 
     # Wait for all tasks to complete (i.e., retrieve the results)
     for task in tasks: task.result()
 
-    # Write a list of file names from the 'data/collected' directory to a new file named 'entities.txt'
-    with open('data/collected/entities.txt','w') as entities:
-        for report in os.listdir('data/collected'):
-            if report == 'entities.txt': continue  # Skip the 'entities.txt' file itself
-            entities.write(f'{report}\n')
+    # Add the timestamp to the list of collected timestamps if the timestamp is present in the file system
+    if os.path.exists(f'data/collected/{timestamp}'):
+        with open('data/collected/entities.txt','a') as entities:
+            entities.write(f'{timestamp}\n')
 
 # This is a special block of code that runs when this script is executed directly (i.e., not imported as a module)
 if __name__ == '__main__':
