@@ -78,7 +78,7 @@ def main(args : Namespace) -> None:
     if os.path.exists(f'data/reports/{timestamp}'):
         with open('data/entities.json','w') as f:
             entities['num-reports'] += 1
-            entities['reports'].append({timestamp:cities})
+            entities['reports'][timestamp] = cities
             json.dump(entities, f,indent='\t')
 
 # This is a special block of code that runs when this script is executed directly (i.e., not imported as a module)
