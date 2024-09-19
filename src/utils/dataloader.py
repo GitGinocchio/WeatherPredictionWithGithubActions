@@ -36,8 +36,9 @@ def stream_data_in_memory(enable_cache : bool = True):
 		assert response.status_code == 200, f"Failed to get entities file: {response.status_code}"
 		entities = json.loads(response.content)
 		last_update = entities['last-update']
+		num_reports = entities['num-reports']
 
-		print(f'Successfully got entities.json file. Last available update: {last_update}')
+		print(f'Successfully got entities.json file. Last available update: {last_update}. Num reports: {num_reports}')
 
 		reports = entities['reports'].items()
 
