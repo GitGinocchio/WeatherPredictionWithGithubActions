@@ -29,13 +29,13 @@ def fetch_city_weather_data(city : str, timestamp : str):
         current_obs_time = current_report["current_condition"][0]["localObsDateTime"]
 
         # TODO: (Maybe check only the latest report to avoid duplicates)
-        # Loop through all files in the 'data/collected' directory
-        for report in os.listdir('data/collected'): 
+        # Loop through all files in the 'data/reports' directory
+        for report in os.listdir('data/reports'): 
             # Check if a file with the same city name exists, but not the latest report (based on observation time)
-            if not os.path.exists(f'data/collected/{report}/{city}.json'):
+            if not os.path.exists(f'data/reports/{report}/{city}.json'):
                 continue
 
-            with open(f'data/collected/{report}/{city}.json', 'r') as f:
+            with open(f'data/reports/{report}/{city}.json', 'r') as f:
                 # Load the old weather report from a file
                 old_report = json.load(f)
 
@@ -46,17 +46,17 @@ def fetch_city_weather_data(city : str, timestamp : str):
             if old_obs_time == current_obs_time: break
         else:
             # Create a new directory to store the fetched data for this timestamp
-            data_path = os.path.join(r'data/collected', timestamp)
+            data_path = os.path.join(r'data/reports', timestamp)
             os.makedirs(data_path, exist_ok=True)
 
             with open(os.path.join(data_path, f"{city}.json"), 'w') as f:
                 # Write the current weather report to a new file in the created directory
-                json.dump(current_report, f, indent=4)
+                json.dump(current_report, f, indent='\t')
+
+            return city
 
     except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, requests.exceptions.SSLError, AssertionError, json.JSONDecodeError) as e: 
         print(f'Error fetching {city} weather data:\n{e}')
-
-
 
 # This is the main function of the script, which collects weather data for a list of cities and writes it to files.
 def main(args : Namespace) -> None:
@@ -69,12 +69,17 @@ def main(args : Namespace) -> None:
         tasks = [executor.submit(fetch_city_weather_data, city, timestamp) for city in config["sample-cities"]]
 
     # Wait for all tasks to complete (i.e., retrieve the results)
-    for task in tasks: task.result()
+    cities = [result for task in tasks if (result:=task.result())]
+
+    with open('data/entities.json','r') as f:
+        entities = json.load(f)
 
     # Add the timestamp to the list of collected timestamps if the timestamp is present in the file system
-    if os.path.exists(f'data/collected/{timestamp}'):
-        with open('data/collected/entities.txt','a') as entities:
-            entities.write(f'{timestamp}\n')
+    if os.path.exists(f'data/reports/{timestamp}'):
+        with open('data/entities.json','w') as f:
+            entities['num-reports'] += 1
+            entities['reports'].append({timestamp:cities})
+            json.dump(entities, f,indent='\t')
 
 # This is a special block of code that runs when this script is executed directly (i.e., not imported as a module)
 if __name__ == '__main__':
