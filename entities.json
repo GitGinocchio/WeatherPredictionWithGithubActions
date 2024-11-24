@@ -1,6 +1,6 @@
 {
 	"last-update": "2024-09-19_16-49-27",
-	"num-reports": 1788,
+	"num-reports": 1789,
 	"reports": {
 		"2024-08-29_02-50-30": [
 			"Anchorage",
@@ -21800,6 +21800,20 @@
 			"Genova",
 			"Catania",
 			"Siena"
+		],
+		"2024-11-24_04-14-10": [
+			"London",
+			"San Francisco",
+			"Berlino",
+			"Singapore",
+			"Las Vegas",
+			"Oslo",
+			"Anchorage",
+			"Mumbai",
+			"Torino",
+			"Trento",
+			"Bormio",
+			"Bologna"
 		]
 	}
 }
