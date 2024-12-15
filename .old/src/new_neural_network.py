@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 
-from models.NeuralNetworks import LSTMNetwork
+from models.NeuralNetworks import *
 from utils.dataloader import stream_data_in_memory
 
 data = stream_data_in_memory()
@@ -60,7 +60,8 @@ hidden_dim = 128
 output_dim = y_train_tensor.shape[1]
 num_layers = 2
 
-model = LSTMNetwork(input_dim, hidden_dim, output_dim, num_layers).to("cuda")
+#model = LSTMNetwork(input_dim, hidden_dim, output_dim, num_layers).to("cuda")
+model  = ImprovedLSTMNetwork(input_dim, hidden_dim, output_dim,num_layers).to("cuda")
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=10, factor=0.5)
@@ -123,11 +124,11 @@ def predict(model, data):
 new_data = pd.DataFrame({
     'minute': [0],
     'hour': [13],
-    'month': [9],
-    'day': [17],
+    'month': [12],
+    'day': [15],
     'year': [2024],
-    'latitude': [44.417],
-    'longitude': [8.950],
+    'latitude': [45.467],
+    'longitude': [9.200],
     #'area_encoded': [3],
     #'region_encoded': [9],
     #'country_encoded': [7]
