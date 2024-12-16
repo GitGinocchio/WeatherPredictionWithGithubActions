@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import overload
+from typing import Generator, Any
 import sqlite3
 import uuid
 
@@ -18,6 +18,7 @@ class Database:
         if cls._instance is None:
             cls._instance = super(Database, cls).__new__(cls)
             cls._connection = sqlite3.connect(DATABASE_PATH)
+            cls._connection.row_factory = sqlite3.Row
 
             with open(SCRIPT_PATH, "r") as f:
                 cls._connection.executescript(f.read())
@@ -41,13 +42,13 @@ class Database:
         assert self._cursor is not None, "Cursor has not been created yet"
         return self._cursor
     
-    def hasWeatherCondition(self, latitude : int, longitude : int, datetime : str) -> tuple[str | int | float, ...] | None:
+    def hasWeatherCondition(self, latitude : int, longitude : int, datetime : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_WEATHER_CONDITION, (latitude, longitude, datetime))
-        return cursor.fetchone()
+        return dict(cursor.fetchone())
 
-    def hasDaily(self, latitude : int, longitude : int, date : str) -> tuple[str | int | float, ...] | None:
+    def hasDaily(self, latitude : int, longitude : int, date : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_DAILY, (latitude, longitude, date))
-        return cursor.fetchone()
+        return dict(cursor.fetchone())
 
     def newReport(self, report : dict[str, list[dict]]) -> None:
         try:
@@ -207,3 +208,20 @@ class Database:
         except sqlite3.IntegrityError as e:
             self.connection.rollback()
             raise e
+        
+    def getAllWeatherConditions(self) -> Generator[dict[str, Any], None, None]:
+        cursor = self.cursor.execute(GET_ALL_WEATHER_CONDITIONS)
+        for row in cursor.fetchall():
+            yield dict(row)
+
+    def refactorDatabase(self, query : str) -> None:
+        try:
+            self.cursor.executescript(query)
+        except sqlite3.IntegrityError as e:
+            self.connection.rollback()
+            raise e
+        except Exception as e:
+            self.connection.rollback()
+            raise e
+        else:
+            self.connection.commit()

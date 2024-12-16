@@ -1,0 +1,2 @@
+!! Togliere le " dalla colonna region e sostituire con NULL
+!! Eliminare il branch data e utilizzare solo il branch main con il database nel branch main

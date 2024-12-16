@@ -49,7 +49,6 @@ CREATE TABLE IF NOT EXISTS weather (
 );
 
 CREATE TABLE IF NOT EXISTS daily (
-    localObsDateTime DATETIME,
     date DATETIME,
 
     latitude FLOAT,
@@ -78,11 +77,10 @@ CREATE TABLE IF NOT EXISTS daily (
     uvIndex INT,
 
     PRIMARY KEY (date, latitude, longitude)
-    FOREIGN KEY (localObsDateTime, latitude, longitude) REFERENCES weather (localObsDateTime, latitude, longitude)
+    FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
 );
 
 CREATE TABLE IF NOT EXISTS hourly (
-    localObsDateTime DATETIME,
     date DATETIME,
     time INT,                           -- vengono fatte 8 rilevazione rispettivamente a: 0, 3, 6, 9, 12, 15, 18 e 21.
 
@@ -145,7 +143,7 @@ CREATE TABLE IF NOT EXISTS hourly (
 
     PRIMARY KEY (date, time, latitude, longitude)
     FOREIGN KEY (date, latitude, longitude) REFERENCES daily (date, latitude, longitude)
-    FOREIGN KEY (localObsDateTime, latitude, longitude) REFERENCES weather (localObsDateTime, latitude, longitude)
+    FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
 );
 
 COMMIT;
