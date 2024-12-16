@@ -42,6 +42,21 @@ class Database:
         assert self._cursor is not None, "Cursor has not been created yet"
         return self._cursor
     
+    def createBackup(self):
+        pass
+
+    def executeQueryScript(self, query : str) -> None:
+        try:
+            self.cursor.executescript(query)
+        except sqlite3.IntegrityError as e:
+            self.connection.rollback()
+            raise e
+        except Exception as e:
+            self.connection.rollback()
+            raise e
+        else:
+            self.connection.commit()
+
     def hasWeatherCondition(self, latitude : int, longitude : int, datetime : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_WEATHER_CONDITION, (latitude, longitude, datetime))
         return dict(cursor.fetchone())
@@ -49,6 +64,11 @@ class Database:
     def hasDaily(self, latitude : int, longitude : int, date : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_DAILY, (latitude, longitude, date))
         return dict(cursor.fetchone())
+
+    def getAllWeatherConditions(self) -> Generator[dict[str, Any], None, None]:
+        cursor = self.cursor.execute(GET_ALL_WEATHER_CONDITIONS)
+        for row in cursor.fetchall():
+            yield dict(row)
 
     def newReport(self, report : dict[str, list[dict]]) -> None:
         try:
@@ -208,20 +228,6 @@ class Database:
         except sqlite3.IntegrityError as e:
             self.connection.rollback()
             raise e
-        
-    def getAllWeatherConditions(self) -> Generator[dict[str, Any], None, None]:
-        cursor = self.cursor.execute(GET_ALL_WEATHER_CONDITIONS)
-        for row in cursor.fetchall():
-            yield dict(row)
 
-    def refactorDatabase(self, query : str) -> None:
-        try:
-            self.cursor.executescript(query)
-        except sqlite3.IntegrityError as e:
-            self.connection.rollback()
-            raise e
-        except Exception as e:
-            self.connection.rollback()
-            raise e
-        else:
-            self.connection.commit()
+    def updateInfo(self):
+        pass
