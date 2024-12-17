@@ -59,11 +59,11 @@ class Database:
 
     def hasWeatherCondition(self, latitude : int, longitude : int, datetime : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_WEATHER_CONDITION, (latitude, longitude, datetime))
-        return dict(cursor.fetchone())
+        return dict(row) if (row:=cursor.fetchone()) else None
 
     def hasDaily(self, latitude : int, longitude : int, date : str) -> dict[str, Any] | None:
         cursor = self.cursor.execute(HAS_DAILY, (latitude, longitude, date))
-        return dict(cursor.fetchone())
+        return dict(row) if (row:=cursor.fetchone()) else None
 
     def getAllWeatherConditions(self) -> Generator[dict[str, Any], None, None]:
         cursor = self.cursor.execute(GET_ALL_WEATHER_CONDITIONS)
