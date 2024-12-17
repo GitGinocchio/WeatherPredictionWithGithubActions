@@ -39,9 +39,8 @@ def main(args : Namespace) -> None:
         with db as conn:
             for city in config["sample-cities"]:
                 report = fetch_city_weather_data(city)
-
-                if not report: continue
                 print(f"got report: {report}")
+                if not report: continue
 
                 latitude = report["nearest_area"][0]["latitude"]
                 longitude = report["nearest_area"][0]["longitude"]
