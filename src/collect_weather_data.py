@@ -27,31 +27,27 @@ def fetch_city_weather_data(city : str) -> dict | None:
     except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, requests.exceptions.SSLError, json.JSONDecodeError) as e: 
         print(f'Error fetching {city} weather data:\n{e}')
         return None
-    except (AssertionErtor) as e:
+    except AssertionError as e:
         print(e)
         return None
     else:
         return report
 
 def main(args : Namespace) -> None:
+    with db as conn:
+        for city in config["sample-cities"]:
+            report = fetch_city_weather_data(city)
 
-    try: 
-        with db as conn:
-            for city in config["sample-cities"]:
-                report = fetch_city_weather_data(city)
-                print(f"got report: {report}")
-                if not report: continue
+            if not report: continue
 
-                latitude = report["nearest_area"][0]["latitude"]
-                longitude = report["nearest_area"][0]["longitude"]
-                datetime = report["current_condition"][0]["localObsDateTime"]
+            latitude = report["nearest_area"][0]["latitude"]
+            longitude = report["nearest_area"][0]["longitude"]
+            datetime = report["current_condition"][0]["localObsDateTime"]
 
-                if conn.hasWeatherCondition(latitude, longitude, datetime):
-                    continue
+            if conn.hasWeatherCondition(latitude, longitude, datetime):
+                continue
 
-                conn.newReport(report)
-    except Exception as e: 
-        print(f"An error occurred during weather data collection:\n{e}")
+            conn.newReport(report)
 
 
 

@@ -126,7 +126,6 @@ class Database:
 
             for day in range(0, len(daily)):
                 self.cursor.execute(NEW_DAILY_QUERY, (
-                    condition["localObsDateTime"],
                     daily[day]["date"],
 
                     area["latitude"],
@@ -159,7 +158,6 @@ class Database:
 
                 for hour in range(0,len(daily[day]["hourly"])):
                     self.cursor.execute(NEW_HOURLY_QUERY,(
-                        condition["localObsDateTime"],
                         daily[day]["date"],
                         hourly[hour]["time"],
 
