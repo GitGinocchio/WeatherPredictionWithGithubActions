@@ -41,6 +41,7 @@ def main(args : Namespace) -> None:
                 report = fetch_city_weather_data(city)
 
                 if not report: continue
+                print(f"got report: {report}")
 
                 latitude = report["nearest_area"][0]["latitude"]
                 longitude = report["nearest_area"][0]["longitude"]
