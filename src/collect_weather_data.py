@@ -46,7 +46,7 @@ def main(args : Namespace) -> None:
                 longitude = report["nearest_area"][0]["longitude"]
                 datetime = report["current_condition"][0]["localObsDateTime"]
 
-                if conn.hasWeatherCondition(latitude, longitude, datetime) is not None:
+                if conn.hasWeatherCondition(latitude, longitude, datetime):
                     continue
 
                 conn.newReport(report)
