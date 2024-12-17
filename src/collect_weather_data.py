@@ -24,8 +24,11 @@ def fetch_city_weather_data(city : str) -> dict | None:
 
         report : dict = response.json()
 
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, requests.exceptions.SSLError, AssertionError, json.JSONDecodeError) as e: 
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, requests.exceptions.SSLError, json.JSONDecodeError) as e: 
         print(f'Error fetching {city} weather data:\n{e}')
+        return None
+    except (AssertionErtor) as e:
+        print(e)
         return None
     else:
         return report
