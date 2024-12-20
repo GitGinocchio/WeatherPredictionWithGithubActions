@@ -2,3 +2,4 @@
 ? Eliminare il branch data e utilizzare solo il branch main con il database nel branch main
 - Creare un sistema di backup automatico del database
 - !! Convertire tutte le date in formato UTC
+- ! Creare un pool di esecuzione su diversi branch per ottenere i dati meteo in modo parallelo

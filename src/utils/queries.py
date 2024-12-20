@@ -10,7 +10,7 @@ INSERT INTO weather (
     feelsLikeF,
     
     cloudcover,
-    humidty,
+    humidity,
     uvIndex,
     
     precip,
@@ -257,6 +257,74 @@ FROM hourly;
 -- Elimina la vecchia tabella e rinomina
 DROP TABLE hourly;
 ALTER TABLE hourly_new RENAME TO hourly;
+
+-- Riattiva le chiavi esterne
+PRAGMA foreign_keys = ON;
+"""
+
+HUMIDITY_FIX = """
+-- Disabilita temporaneamente le chiavi esterne
+PRAGMA foreign_keys = OFF;
+
+-- 1. Ricrea la tabella `weather` con la colonna `humidity` corretta
+CREATE TABLE weather_new (
+    localObsDateTime DATETIME,
+
+    temp INT,
+    feelsLike INT,
+
+    tempF INT,
+    feelsLikeF INT,
+
+    cloudcover INT,
+    humidity INT,
+    uvIndex INT,
+
+    precip FLOAT,
+    precipInches FLOAT,
+
+    pressure INT,
+    pressureInches INT,
+
+    visibility INT,
+    visibilityMiles INT,
+
+    weatherCode INT,
+    weatherDescription TEXT,
+
+    winddir INT,
+    winddir16Point TEXT,
+    
+    windspeed INT,
+    windspeedMiles INT,
+
+    city TEXT,
+    country TEXT,
+    region TEXT,
+    latitude FLOAT,
+    longitude FLOAT,
+    population BIGINT,
+
+    PRIMARY KEY (latitude, longitude, localObsDateTime)
+);
+
+-- 2. Copia i dati dalla vecchia tabella alla nuova tabella
+INSERT INTO weather_new (
+    localObsDateTime, temp, feelsLike, tempF, feelsLikeF, cloudcover, humidity, uvIndex,
+    precip, precipInches, pressure, pressureInches, visibility, visibilityMiles,
+    weatherCode, weatherDescription, winddir, winddir16Point, windspeed, windspeedMiles,
+    city, country, region, latitude, longitude, population
+)
+SELECT
+    localObsDateTime, temp, feelsLike, tempF, feelsLikeF, cloudcover, humidty, uvIndex,
+    precip, precipInches, pressure, pressureInches, visibility, visibilityMiles,
+    weatherCode, weatherDescription, winddir, winddir16Point, windspeed, windspeedMiles,
+    city, country, region, latitude, longitude, population
+FROM weather;
+
+-- 3. Elimina la vecchia tabella e rinomina la nuova
+DROP TABLE weather;
+ALTER TABLE weather_new RENAME TO weather;
 
 -- Riattiva le chiavi esterne
 PRAGMA foreign_keys = ON;

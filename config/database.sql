@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS weather (
     feelsLikeF INT,
 
     cloudcover INT,
-    humidty INT,
+    humidity INT,
     uvIndex INT,
 
     precip FLOAT,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS daily (
     totalSnow FLOAT,
     uvIndex INT,
 
-    PRIMARY KEY (date, latitude, longitude)
+    PRIMARY KEY (date, latitude, longitude),
     FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
 );
 
@@ -141,8 +141,8 @@ CREATE TABLE IF NOT EXISTS hourly (
     winddir INT,
     winddir16Point TEXT,
 
-    PRIMARY KEY (date, time, latitude, longitude)
-    FOREIGN KEY (date, latitude, longitude) REFERENCES daily (date, latitude, longitude)
+    PRIMARY KEY (date, time, latitude, longitude),
+    FOREIGN KEY (date, latitude, longitude) REFERENCES daily (date, latitude, longitude),
     FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
 );
 
