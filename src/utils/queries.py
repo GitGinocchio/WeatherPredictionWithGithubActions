@@ -1,7 +1,11 @@
 
 NEW_WEATHER_CONDITION_QUERY = """
 INSERT INTO weather (
-    localObsDateTime,
+    year,
+    month,
+    day,
+    hour,
+    minute,
     
     temp,
     feelsLike,
@@ -37,12 +41,14 @@ INSERT INTO weather (
     latitude,
     longitude,
     population
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """
 
 NEW_DAILY_QUERY = """
 INSERT INTO daily (
-    date,
+    year,
+    month,
+    day,
     
     latitude,
     longitude,
@@ -68,12 +74,14 @@ INSERT INTO daily (
     sunHour,
     totalSnow,
     uvIndex
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """
 
 NEW_HOURLY_QUERY = """
 INSERT INTO hourly (
-    date,
+    year,
+    month,
+    day,
     time,
     
     latitude,
@@ -132,11 +140,51 @@ INSERT INTO hourly (
 
     winddir,
     winddir16Point
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """
 
-HAS_WEATHER_CONDITION = """SELECT * FROM weather WHERE latitude = ? AND longitude = ? AND localObsDateTime = ?"""
+HAS_WEATHER_CONDITION = """
+SELECT * FROM weather 
+WHERE latitude = ? 
+  AND longitude = ? 
+  AND year = ?
+  AND month = ?
+  AND day = ?
+  AND hour = ?
+  AND minute = ?
+"""
 
-GET_ALL_WEATHER_CONDITIONS = """SELECT * FROM weather"""
+GET_ALL_WEATHER_CONDITIONS = """
+SELECT * FROM weather
+"""
 
-HAS_DAILY = """SELECT * FROM daily WHERE latitude = ? AND longitude = ? AND date = ?"""
+GET_ALL_DAILY = """
+SELECT * FROM daily
+"""
+
+GET_ALL_HOURLY = """
+SELECT * FROM hourly
+"""
+
+HAS_DAILY = """
+SELECT * FROM daily 
+WHERE latitude = ? 
+  AND longitude = ? 
+  AND year = ?
+  AND month = ?
+  AND day = ?
+"""
+
+
+    minTemp INT,
+    minTempF INT,
+
+    sunHour FLOAT,
+    totalSnow FLOAT,
+    uvIndex INT,
+
+    PRIMARY KEY (year, month, day, latitude, longitude),
+    FOREIGN KEY (latitude, longitude, year, month, day) REFERENCES weather (latitude, longitude, year, month, day)
+);
+"""
+

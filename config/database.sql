@@ -8,7 +8,11 @@ CREATE TABLE IF NOT EXISTS info (
 );
 
 CREATE TABLE IF NOT EXISTS weather (
-    localObsDateTime DATETIME,
+    year INT, 
+    month INT, 
+    day INT, 
+    hour INT, 
+    minute INT,
 
     temp INT,
     feelsLike INT,
@@ -45,11 +49,13 @@ CREATE TABLE IF NOT EXISTS weather (
     longitude FLOAT,
     population BIGINT,
 
-    PRIMARY KEY (latitude, longitude, localObsDateTime)
+    PRIMARY KEY (latitude, longitude, year, month, day, hour, minute)
 );
 
 CREATE TABLE IF NOT EXISTS daily (
-    date DATETIME,
+    year INT, 
+    month INT, 
+    day INT, 
 
     latitude FLOAT,
     longitude FLOAT,
@@ -76,19 +82,21 @@ CREATE TABLE IF NOT EXISTS daily (
     totalSnow FLOAT,
     uvIndex INT,
 
-    PRIMARY KEY (date, latitude, longitude),
-    FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
+    PRIMARY KEY (year, month, day, latitude, longitude),
+    FOREIGN KEY (latitude, longitude, year, month, day) REFERENCES weather (latitude, longitude, year, month, day)
 );
 
 CREATE TABLE IF NOT EXISTS hourly (
-    date DATETIME,
+    year INT, 
+    month INT, 
+    day INT,
     time INT,                           -- vengono fatte 8 rilevazione rispettivamente a: 0, 3, 6, 9, 12, 15, 18 e 21.
 
     latitude FLOAT,
     longitude FLOAT,
 
     dewPoint INT,
-    DewPointF INT,
+    dewPointF INT,
 
     feelsLike INT,
     feelsLikeF INT,
@@ -141,9 +149,9 @@ CREATE TABLE IF NOT EXISTS hourly (
     winddir INT,
     winddir16Point TEXT,
 
-    PRIMARY KEY (date, time, latitude, longitude),
-    FOREIGN KEY (date, latitude, longitude) REFERENCES daily (date, latitude, longitude),
-    FOREIGN KEY (latitude, longitude) REFERENCES weather (latitude, longitude)
+    PRIMARY KEY (year, month, day, time, latitude, longitude),
+    FOREIGN KEY (year, month, day, latitude, longitude) REFERENCES daily (year, month, day, latitude, longitude),
+    FOREIGN KEY (year, month, day, latitude, longitude) REFERENCES weather (year, month, day, latitude, longitude)
 );
 
 COMMIT;

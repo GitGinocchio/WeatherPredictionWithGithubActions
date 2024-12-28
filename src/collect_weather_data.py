@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, Namespace
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta
 import requests
 import asyncio
 import json
@@ -42,9 +43,9 @@ def main(args : Namespace) -> None:
 
             latitude = report["nearest_area"][0]["latitude"]
             longitude = report["nearest_area"][0]["longitude"]
-            datetime = report["current_condition"][0]["localObsDateTime"]
+            dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
 
-            if conn.hasWeatherCondition(latitude, longitude, datetime):
+            if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
                 continue
 
             conn.newReport(report)
