@@ -36,6 +36,9 @@ runs:
       shell: bash
       run: |
         git branch --list ${{ inputs.branch_name }} &> /dev/null || git branch ${{ inputs.branch_name }}
+        git add .
+        git commit -m "Create data branch"
+        git push origin ${inputs.branch_name}
   
     - name: Checkout Data Branch
       uses: actions/checkout@v4
@@ -46,7 +49,7 @@ runs:
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: "3.12"
+        python-version: "3.11"
     
     - name: Install Python dependencies
       shell: bash
