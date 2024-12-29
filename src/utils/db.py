@@ -157,7 +157,9 @@ class Database:
     def _newDaily(self, daily : dict, area : dict, dt : datetime) -> None:
         for day in range(0, len(daily)):
             self.cursor.execute(NEW_DAILY_QUERY, (
-                daily[day]["date"],
+                dt.year,
+                dt.month,
+                dt.day,
 
                 area["latitude"],
                 area["longitude"],
