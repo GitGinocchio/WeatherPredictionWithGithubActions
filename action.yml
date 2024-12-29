@@ -24,13 +24,13 @@ runs:
       uses: actions/checkout@v3
       with:
         ref: utils
-        path: src/utils
+        path: ${{ github.action_path }}/src/utils
   
     - name: Checkout Data Branch
       uses: actions/checkout@v3
       with:
-        ref: main
-        path: main
+        ref: data
+        path: data
 
     - name: Setup Python
       uses: actions/setup-python@v4
