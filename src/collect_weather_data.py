@@ -14,7 +14,7 @@ db = Database()
 
 session = requests.Session()
 
-with open(r"config/sample-cities.json",'r') as f:
+with open(r"src/config/sample-cities.json",'r') as f:
     config = json.load(f)
 
 def fetch_city_weather_data(city : str) -> dict | None:
