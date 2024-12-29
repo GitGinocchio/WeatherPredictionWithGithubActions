@@ -2,9 +2,14 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS info (
     lastUpdate DATETIME PRIMARY KEY,
-    numReports BIGINT,
-    numDailies BIGINT,
-    numHourly BIGINT
+    
+    numNewReports INT,
+    numNewDailies INT,
+    numNewHourlies INT,
+    
+    numTotalReports BIGINT,
+    numTotalDailies BIGINT,
+    numTotalHourlies BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS weather (

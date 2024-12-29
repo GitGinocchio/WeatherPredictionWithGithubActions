@@ -3,3 +3,4 @@
 - Creare un sistema di backup automatico del database
 - !! Convertire tutte le date in formato UTC
 - ! Creare un pool di esecuzione su diversi branch per ottenere i dati meteo in modo parallelo
+- !!! Convertire tutte le date rimanenti relative alla luna e al sole in formato numerico

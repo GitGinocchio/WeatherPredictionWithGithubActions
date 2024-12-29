@@ -93,22 +93,6 @@ class Database:
         for row in cursor.fetchall():
             yield dict(row)
 
-    def getAllWeatherConditions(self) -> Generator[dict[str, Any], None, None]:
-        cursor = self.cursor.execute(GET_ALL_WEATHER_CONDITIONS)
-        for row in cursor.fetchall():
-            yield dict(row)
-
-    def getAllDaily(self) -> Generator[dict[str, Any], None, None]:
-        cursor = self.cursor.execute(GET_ALL_DAILY)
-        for row in cursor.fetchall():
-            yield dict(row)
-    
-    def getAllHourly(self) -> Generator[dict[str, Any], None, None]:
-        cursor = self.cursor.execute(GET_ALL_HOURLY)
-        for row in cursor.fetchall():
-            yield dict(row)
-
-
     def _newWeatherCondition(self, condition : dict, area : dict, dt : datetime) -> None:
         self.cursor.execute(NEW_WEATHER_CONDITION_QUERY, (
             dt.year,

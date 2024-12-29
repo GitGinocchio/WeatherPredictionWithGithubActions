@@ -10,24 +10,26 @@ The goal of this project is to automate the process of obtaining weather data, a
 
 ## Key Features
 
-- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in](https://github.com/chubin/wttr.in) api and stores it in the `data` branch of this repository.v
+- **Automated Data Collection**: A GitHub Action periodically collects weather data from the [wttr.in](https://github.com/chubin/wttr.in) api and stores it in the `data` branch of this repository.
 - **AI-based Weather Forecasting**: The collected data is used to train a machine learning model, which predicts future weather conditions.
 - **Organized Data Management**: The `main` branch contains the core code, while the `data` branch stores all the weather data, keeping the repository clean and efficient.
 - **Customizable Workflow**: The project is designed to be flexible and easily customizable to suit different weather APIs, data analysis methods, and machine learning models.
 
 ## How It Works
+
 ### GitHub Actions Workflow
 1. **Data Collection**: The [`action.yml`](.github/workflows/collect_weather_data.yml) is triggered every one hour. It performs the following steps:
 
     - Checks out the main branch to run the Python script for collecting weather data.
     - Checks out the data branch to store the collected data.
-    - Commits and pushes the new data to the data branch.
-2. **Data Analysis and Forecasting**: `still in development...`
+    - Commits and pushes the updated database to the data branch.
+2. **Data Analysis and Forecasting**: 
+   
+    `still in development...`
     <!-- An optional GitHub Action (examine-data.yml) can be set up to analyze the data and generate weather forecasts based on the collected data. -->
-
-## Next Features
-
-1. **Garbage Collector**: A procedure for evaluating data after it has been collected, to avoid data duplications
+3. **Forecasting Website**: a static website for weather forecasts using GitHub Pages
+   
+    `still in development...`
 
 ## Repository Structure
 
@@ -58,11 +60,8 @@ The goal of this project is to automate the process of obtaining weather data, a
 #### Data Branch
 
 ```python
-├── collected/                          # The folder containing all the data collected up to now, saved in folders, and divided by city
-│   ├── YYYY--MM-DD_hh-mm-ss/
-│   |   ├── New York.json               # An example file containing data in json format
-│   |   ...
-│   ...
+├───...
+└───database.db # Database containing all the weather data collected by the GitHub Actions
 ```
 
 ## Setup Instructions
@@ -76,12 +75,11 @@ The goal of this project is to automate the process of obtaining weather data, a
 1. **Clone the repository:**
 
    ```bash
-   git clone GitGinocchio/weather-prediction-with-github-actions.git
-   cd weather-prediction-with-github-actions
+   git clone GitGinocchio/WeatherPredictionWithGithubActions.git
+   cd WeatherPredictionWithGithubActions
    ```
 
 2. **Install dependencies:**
-
     ```bash
     pip install -r action-requirements.txt
     pip install -r dev-requirements.txt
@@ -98,7 +96,7 @@ The goal of this project is to automate the process of obtaining weather data, a
     
 to run the data collection script locally:
 ```bash
-python src/actions/collect_weather_data.py
+python src/collect_weather_data.py
 ```
 #### Data Storage
 
