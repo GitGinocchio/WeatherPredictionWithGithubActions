@@ -5,3 +5,4 @@ torchaudio
 requests
 pandas
 numpy
+colorama
