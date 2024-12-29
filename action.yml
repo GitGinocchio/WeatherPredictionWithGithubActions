@@ -32,8 +32,8 @@ runs:
       with:
         ref: main
 
-    - name: Create Data Branch if it doesn't exist
-      id: create_branch
+    - name: Checkout or Create Data Branch
+      id: checkout_or_create
       shell: bash
       run: |
         git config --global user.name 'github-actions[bot]'
@@ -42,20 +42,22 @@ runs:
         # Controlla se il branch esiste
         if git ls-remote --exit-code --heads origin "${{ inputs.branch_name }}"; then
           echo "Branch ${{ inputs.branch_name }} already exists."
-          echo "branch_exists=true" >> $GITHUB_ENV
+          git checkout ${{ inputs.branch_name }}
+          echo "branch_created=false" >> $GITHUB_ENV
         else
-          echo "Creating a clean branch ${{ inputs.branch_name }}."
+          echo "Creating a new branch ${{ inputs.branch_name }}."
           git checkout --orphan ${{ inputs.branch_name }}
-          echo "branch_exists=false" >> $GITHUB_ENV
+          echo -e "# Ignore everything\n*\n# Except this file\n!.gitignore" > .gitignore
+          git add .gitignore
+          git commit -m "Initial commit with .gitignore"
+          git push origin ${{ inputs.branch_name }}
+          echo "branch_created=true" >> $GITHUB_ENV
         fi
 
-    - name: Cleanup Branch
-      if: env.branch_exists == 'false'
+    - name: Clean Newly Created Branch
+      if: env.branch_created == 'true'
       shell: bash
       run: |
-        # Checkout del branch
-        git checkout ${{ inputs.branch_name }}
-
         # Mantieni solo il file .gitignore
         find . -type f ! -name '.gitignore' -delete
         find . -type d -empty -delete # Rimuove eventuali cartelle vuote
@@ -72,7 +74,7 @@ runs:
         fi
 
     - name: Checkout Data Branch if Exists
-      if: env.branch_exists == 'true'
+      if: env.branch_created == 'false'
       uses: actions/checkout@v3
       with:
         ref: ${{ inputs.branch_name }}
