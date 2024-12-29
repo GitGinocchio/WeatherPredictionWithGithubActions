@@ -20,19 +20,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download utils scripts from main branch
-      uses: actions/download-artifact@v3
+    - name: Checkout Utils Branch
+      uses: actions/checkout@v3
       with:
-        name: utils
-        path: ${{ github.action_path }}/src/utils
-        repository: ${{ github.repository }}
-        ref: main
+        ref: utils
+        path: src/utils
   
     - name: Checkout Data Branch
       uses: actions/checkout@v3
       with:
-        ref: data
-        path: data
+        ref: main
+        path: main
 
     - name: Setup Python
       uses: actions/setup-python@v4
