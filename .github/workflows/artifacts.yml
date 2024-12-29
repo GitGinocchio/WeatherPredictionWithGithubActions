@@ -1,0 +1,17 @@
+name: Upload Artifacts
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: utils
+          path: ${{ github.action_path }}/utils
+          repository: ${{ github.repository }}
+          ref: main

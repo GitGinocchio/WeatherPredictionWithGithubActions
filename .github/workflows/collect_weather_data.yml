@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Permette l'avvio manuale del workflow
 
 jobs:
-  update-stats:
+  collect_weather_data:
     runs-on: ubuntu-latest
 
     steps:
