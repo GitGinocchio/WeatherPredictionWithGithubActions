@@ -58,14 +58,13 @@ runs:
       if: env.branch_created == 'true'
       shell: bash
       run: |
-        # Mantieni solo il file .gitignore
+        cd data
+
         find . -type f ! -name '.gitignore' -delete
         find . -type d -empty -delete # Rimuove eventuali cartelle vuote
 
-        # Aggiungi i cambiamenti
         git add .
 
-        # Verifica se ci sono modifiche
         if git diff-index --quiet HEAD --; then
             echo "Nessuna modifica rilevata."
         else
