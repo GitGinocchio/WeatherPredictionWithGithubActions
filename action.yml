@@ -28,7 +28,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout Main Branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: main
 
@@ -44,7 +44,7 @@ runs:
         git push origin ${inputs.branch_name}
   
     - name: Checkout Data Branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: ${{ inputs.branch_name }}
         path: data
