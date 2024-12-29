@@ -12,4 +12,4 @@ jobs:
 
     steps:
       - name: Use Collect Weather Data Action
-        uses: GitGinocchio/weather-prediction-github-action@actions-collect
+        uses: GitGinocchio/weather-prediction-github-action@main
