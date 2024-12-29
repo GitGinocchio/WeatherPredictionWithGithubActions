@@ -35,6 +35,9 @@ runs:
     - name: Create Data Branch if it doesn't exist
       shell: bash
       run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
         git branch --list ${{ inputs.branch_name }} &> /dev/null || git branch ${{ inputs.branch_name }}
         git add .
         git commit -m "Create data branch"
