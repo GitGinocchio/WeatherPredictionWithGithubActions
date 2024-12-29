@@ -4,14 +4,17 @@ on:
   push:
     branches: [ "main" ]
 
+  workflow_dispatch:
+
 jobs:
   upload-artifacts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main
+          path: ${{ github.action_path }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
