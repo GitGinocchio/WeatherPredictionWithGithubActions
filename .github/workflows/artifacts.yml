@@ -14,10 +14,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: main
-          path: ${{ github.action_path }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: utils
-          path: ${{ github.action_path }}/src/utils
+          path: src/utils
