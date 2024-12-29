@@ -50,7 +50,7 @@ runs:
         fi
 
     - name: Cleanup Branch
-      if: env.branch_exists == 'true'
+      if: env.branch_exists == 'false'
       shell: bash
       run: |
         # Checkout del branch
