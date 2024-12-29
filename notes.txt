@@ -1,6 +1,0 @@
-✔ Togliere le " dalla colonna region e sostituire con NULL
-? Eliminare il branch data e utilizzare solo il branch main con il database nel branch main
-- Creare un sistema di backup automatico del database
-- !! Convertire tutte le date in formato UTC
-- ! Creare un pool di esecuzione su diversi branch per ottenere i dati meteo in modo parallelo
-- !!! Convertire tutte le date rimanenti relative alla luna e al sole in formato numerico
