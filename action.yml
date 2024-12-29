@@ -1,5 +1,5 @@
 name: 'Collect Weather Data'
-description: 'Collect Weather Data using wttr.in and store it in data/collected '
+description: 'Collect Weather Data using wttr.in and store it in data'
 branding:
   icon: "activity"
   color: "green"
