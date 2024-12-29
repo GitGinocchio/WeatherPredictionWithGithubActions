@@ -32,7 +32,7 @@ runs:
       with:
         ref: main
 
-    - name: Checkout or Create Data Branch
+    - name: Checkout or Create Branch in 'data' Folder
       id: checkout_or_create
       shell: bash
       run: |
@@ -45,42 +45,19 @@ runs:
         # Controlla se il branch esiste
         if git ls-remote --exit-code --heads origin "${{ inputs.branch_name }}"; then
           echo "Branch ${{ inputs.branch_name }} already exists."
-          git checkout ${{ inputs.branch_name }}
-          echo "branch_created=false" >> $GITHUB_ENV
         else
-          echo "Creating a new branch ${{ inputs.branch_name }}."
+          echo "Branch ${{ inputs.branch_name }} does not exist, creating a new branch."
+          
+          # Crea un nuovo branch orfano se non esiste
           git checkout --orphan ${{ inputs.branch_name }}
-          echo -e "# Ignore everything\n*\n# Except this file\n!.gitignore" > .gitignore
-          git add .gitignore
-          git commit -m "Initial commit"
+          git rm -rf .  # Rimuovi tutti i file, mantenendo .gitignore
+          git add .
+          git commit -m "Initial commit with .gitignore"
           git push origin ${{ inputs.branch_name }}
-          echo "branch_created=true" >> $GITHUB_ENV
+
         fi
 
-    - name: Clean Newly Created Branch
-      if: env.branch_created == 'true'
-      shell: bash
-      run: |
-        cd data
-
-        find . -type f ! -name '.gitignore' -delete
-        find . -type d -empty -delete
-
-        git add .
-
-        if git diff-index --quiet HEAD --; then
-            echo "Nessuna modifica rilevata."
-        else
-            git commit -m "Cleanup branch, mantenendo solo .gitignore"
-            git push origin ${{ inputs.branch_name }}
-        fi
-
-    - name: Checkout Data Branch if Exists
-      if: env.branch_created == 'false'
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ inputs.branch_name }}
-        path: data
+        git checkout ${{ inputs.branch_name }} -- data
 
     - name: Setup Python
       uses: actions/setup-python@v4
