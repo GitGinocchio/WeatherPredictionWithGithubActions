@@ -19,7 +19,7 @@ def fetch_city_weather_data(city : str) -> dict | None:
     api_url = f'https://wttr.in/{city}?format=j1'
     
     try:
-        response = session.get(api_url, timeout=60)
+        response = session.get(api_url, timeout=10)
         
         assert response.headers['Content-Type'] == 'application/json', f"Expected Content-Type to be application/json, but got {response.headers['Content-Type']}"
 
