@@ -1,5 +1,5 @@
 name: 'Collect Weather Data'
-description: 'Collect Weather Data using wttr.in and store it in data'
+description: 'Collect Weather Data using wttr.in and store it in branch'
 branding:
   icon: "activity"
   color: "green"
@@ -16,19 +16,31 @@ inputs:
     description: "The commit message to use for the commit"
     required: false
     default: "data: Collecting New Weather Data"
+  cities:
+    description: "List of city names, each city must be separated by a newline"
+    required: true
+  branch_name:
+    description: "The name of the branch to store the data in"
+    required: true
+    default: data
 
 runs:
   using: "composite"
   steps:
     - name: Checkout Main Branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: main
+
+    - name: Create Data Branch if it doesn't exist
+      shell: bash
+      run: |
+        git branch --list ${{ inputs.branch_name }} &> /dev/null || git branch ${{ inputs.branch_name }}
   
     - name: Checkout Data Branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
-        ref: data
+        ref: ${{ inputs.branch_name }}
         path: data
 
     - name: Setup Python
@@ -43,9 +55,10 @@ runs:
     - name: Collect Weather Data
       id: "collect-weather-data"
       shell: bash
+      env:
+        CITIES: ${{ inputs.cities }}
       run: |
-        UPDATE=$(python src/collect_weather_data.py
-        ) || exit 1
+        UPDATE=$(python src/collect_weather_data.py) || exit 1
         echo "markdown=$(echo $UPDATE)" >> $GITHUB_OUTPUT
     
     - name: Commit Changes
@@ -62,6 +75,6 @@ runs:
             echo "Nessun cambiamento rilevato, niente da aggiornare."
         else
             git commit -m "Update weather data"
-            git push origin data
+            git push origin ${{ inputs.branch_name }}
         fi
       working-directory: data
