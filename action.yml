@@ -32,7 +32,8 @@ runs:
       with:
         ref: main
 
-    - name: Create and Clean Data Branch if it doesn't exist
+    - name: Create Data Branch if it doesn't exist
+      id: create_branch
       shell: bash
       run: |
         git config --global user.name 'github-actions[bot]'
@@ -41,16 +42,27 @@ runs:
         # Controlla se il branch esiste
         if git ls-remote --exit-code --heads origin "${{ inputs.branch_name }}"; then
           echo "Branch ${{ inputs.branch_name }} already exists."
+          echo "branch_exists=true" >> $GITHUB_ENV
         else
           echo "Creating a clean branch ${{ inputs.branch_name }}."
           git checkout --orphan ${{ inputs.branch_name }}
-          git rm -rf .  # Rimuovi tutti i file
-          echo "Branch is now clean."
+          git rm -rf .  # Rimuovi tutti i file nel nuovo branch
           git commit --allow-empty -m "Initial empty commit"
           git push origin ${{ inputs.branch_name }}
+          echo "branch_exists=false" >> $GITHUB_ENV
         fi
-  
-    - name: Checkout Data Branch
+
+    - name: Remove All Files from Data Branch
+      if: env.branch_exists == 'false'
+      shell: bash
+      run: |
+        cd data
+        git rm -rf .
+        echo "Pulito il branch data"
+        git commit --allow-empty -m "Clean branch data"
+
+    - name: Checkout Data Branch if Exists
+      if: env.branch_exists == 'true'
       uses: actions/checkout@v3
       with:
         ref: ${{ inputs.branch_name }}
