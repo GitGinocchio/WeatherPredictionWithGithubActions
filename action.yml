@@ -32,18 +32,21 @@ runs:
       with:
         ref: main
 
-    - name: Create Data Branch if it doesn't exist
+    - name: Create and Clean Data Branch if it doesn't exist
       shell: bash
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-        # Controlla se il branch esiste già
+        # Controlla se il branch esiste
         if git ls-remote --exit-code --heads origin "${{ inputs.branch_name }}"; then
           echo "Branch ${{ inputs.branch_name }} already exists."
         else
-          echo "Creating branch ${{ inputs.branch_name }}."
-          git checkout -b ${{ inputs.branch_name }}
+          echo "Creating a clean branch ${{ inputs.branch_name }}."
+          git checkout --orphan ${{ inputs.branch_name }}
+          git rm -rf .  # Rimuovi tutti i file
+          echo "Branch is now clean."
+          git commit --allow-empty -m "Initial empty commit"
           git push origin ${{ inputs.branch_name }}
         fi
   
@@ -78,10 +81,8 @@ runs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-        # Aggiungi i file modificati
         git add .
 
-        # Verifica se ci sono cambiamenti rispetto al commit precedente
         if git diff-index --quiet HEAD --; then
             echo "Nessun cambiamento rilevato, niente da aggiornare."
         else
