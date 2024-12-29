@@ -32,33 +32,11 @@ runs:
       with:
         ref: main
 
-    - name: Checkout or Create Branch in 'data' Folder
-      id: checkout_or_create
-      shell: bash
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-        # Fetch all branches to ensure we are aware of the remote branches
-        git fetch --all
-
-        # Controlla se il branch esiste
-        if git ls-remote --exit-code --heads origin "${{ inputs.branch_name }}"; then
-          echo "Branch ${{ inputs.branch_name }} already exists."
-        else
-          echo "Branch ${{ inputs.branch_name }} does not exist, creating a new branch."
-          
-          # Crea un nuovo branch orfano se non esiste
-          git checkout --orphan ${{ inputs.branch_name }}
-
-          # Rimuovi tutti i file dal branch tranne .gitignore
-          git rm -rf --ignore-unmatch ./*
-          git add .gitignore
-          git commit -m "Initial commit with .gitignore"
-          git push origin ${{ inputs.branch_name }}
-        fi
-
-        git checkout ${{ inputs.branch_name }} -- data
+    - name: Checkout Data Branch
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.branch_name }}
+        path: data
 
     - name: Setup Python
       uses: actions/setup-python@v4
