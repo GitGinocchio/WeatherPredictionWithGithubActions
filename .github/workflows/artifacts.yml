@@ -12,6 +12,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: utils
-          path: ${{ github.action_path }}/utils
-          repository: ${{ github.repository }}
-          ref: main
+          path: ${{ github.action_path }}/src/utils
