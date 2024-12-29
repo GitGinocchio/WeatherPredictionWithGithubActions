@@ -154,8 +154,9 @@ class Database:
             area["population"]
         ))
 
-    def _newDaily(self, daily : dict, area : dict, dt : datetime) -> None:
+    def _newDaily(self, daily : dict, area : dict) -> None:
         for day in range(0, len(daily)):
+            dt = datetime.strptime(daily[day]["date"], "%Y-%m-%d")
             self.cursor.execute(NEW_DAILY_QUERY, (
                 dt.year,
                 dt.month,
@@ -275,7 +276,7 @@ class Database:
                 self.connection.commit()
                 return
             
-            self._newDaily(daily, area, dt)
+            self._newDaily(daily, area)
 
             self.connection.commit()
         except Exception as e:
