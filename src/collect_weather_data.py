@@ -38,8 +38,11 @@ def fetch_city_weather_data(city : str) -> dict | None:
         return report
 
 def main(args : Namespace) -> None:
+
+    logging_queue : list[str] = []
+
     with db as conn:
-        with tqdm(config["sample-cities"]) as bar:
+        with tqdm(config["sample-cities"], desc="Fetching weather data", unit="cities", total=len(config["sample-cities"])) as bar:
             for city in config["sample-cities"]:
                 report = fetch_city_weather_data(city)
 
@@ -52,12 +55,16 @@ def main(args : Namespace) -> None:
                 dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
 
                 if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
-                    #logger.info(f"Report for {city:<15} at {dt} already exists. Skipping.")
+                    logging_queue.append(f"Report for {city:<15} at {dt} already exists. Skipping.")
                     continue
 
                 conn.newReport(report)
-                #logger.info(f"Report for {city:<15} at {dt} created successfully.")
+                logging_queue.append(f"Report for {city:<15} at {dt} created successfully.")
+        
         logger.info(str(bar))
+        for log in logging_queue:
+            logger.info(log)
+
 
 if __name__ == '__main__':
     # Create an ArgumentParser object to parse command-line arguments
