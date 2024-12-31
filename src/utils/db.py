@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
 from typing import Generator, Any, Literal
+import pandas as pd
 import sqlite3
 
 from utils.queries import *
 
-DATABASE_PATH = "./data/database.db"
+DATABASE_PATH = "./src/data/database.db"
 SCRIPT_PATH = "./src/config/database.sql"
 
 class Database:

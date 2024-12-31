@@ -7,14 +7,7 @@ import sys
 import os
 import re
 
-config = {
-    "logger" : {
-        "level" : "INFO",
-        "dir" : "./logs",
-        "tofile" : False,
-        "datefmt" : "%H:%M:%S"
-    },
-}
+from .config import config
 
 def clear():
     """call the command for clearing the terminal depending on your system"""
@@ -37,24 +30,30 @@ levels = {
 class CustomColorsFormatter(logging.Formatter):
     def format(self, record : logging.LogRecord):
         color = levels.get(record.levelname, (logging.INFO, F.WHITE))
-        record.name = f"{F.LIGHTMAGENTA_EX}[{record.name}]{F.RESET}"
-        record.msg = f": {color[1]}{record.msg}{F.RESET}"
-        record.levelname = f"{color[1]}[{record.levelname}]{F.RESET}"
+        record.colored_name = f"{F.LIGHTMAGENTA_EX}[{record.name}]{F.RESET}"
+        record.colored_msg = f": {color[1]}{record.msg}{F.RESET}"
+        record.colored_levelname = f"{color[1]}[{record.levelname}]{F.RESET}"
 
         return super().format(record)
 
-formatter = CustomColorsFormatter(
-    '[%(asctime)s] %(name)s %(levelname)s %(message)s',
-    datefmt=config["logger"]["datefmt"])
+stream_formatter = CustomColorsFormatter(
+    '[%(asctime)s] %(colored_name)s %(colored_levelname)s %(colored_msg)s',
+    datefmt=config["logger"]["datefmt"]
+)
+file_formatter = logging.Formatter(
+    '[%(asctime)s] [%(name)s] [%(levelname)s] : %(message)s',
+    datefmt=config["logger"]["datefmt"]
+)
 
 stream = logging.StreamHandler(sys.stdout)
-stream.setFormatter(formatter)
+stream.setFormatter(stream_formatter)
 
 if config["logger"]["tofile"]:
-    logfile = logging.FileHandler("{}/{}".format(
+    logfile = logging.FileHandler(r"{}//{}.log".format(
         config["logger"]['dir'],
-        datetime.now().strftime(config["logger"]["datefmt"])))
-    logfile.setFormatter(formatter)
+        datetime.now().strftime(config["logger"]["filename_datefmt"])),
+    )
+    logfile.setFormatter(file_formatter)
 
 level = levels.get(config["logger"]["level"], logging.INFO)
 

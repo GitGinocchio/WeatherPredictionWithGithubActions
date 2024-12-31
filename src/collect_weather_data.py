@@ -8,14 +8,12 @@ import os
 
 from utils.db import Database
 from utils.terminal import getlogger
+from utils.config import config
 
 logger = getlogger()
 db = Database()
 
 session = requests.Session()
-
-with open(r"src/config/sample-cities.json",'r') as f:
-    config = json.load(f)
 
 def fetch_city_weather_data(city : str) -> dict | None:
     try:
@@ -52,10 +50,8 @@ def main(args : Namespace) -> None:
                 logger.info(f"Report for {city:<15} at {dt} already exists. Skipping.")
                 continue
 
-            logger.info(f"Creating new report for {city:<15} at {dt}.")
             conn.newReport(report)
-
-
+            logger.info(f"Report for {city:<15} at {dt} created successfully.")
 
 if __name__ == '__main__':
     # Create an ArgumentParser object to parse command-line arguments
