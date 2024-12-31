@@ -1,9 +1,11 @@
 from argparse import ArgumentParser, Namespace
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
+from tqdm import tqdm
 import requests
 import asyncio
 import json
+import sys
 import os
 
 from utils.db import Database
@@ -37,21 +39,25 @@ def fetch_city_weather_data(city : str) -> dict | None:
 
 def main(args : Namespace) -> None:
     with db as conn:
-        for city in config["sample-cities"]:
-            report = fetch_city_weather_data(city)
+        with tqdm(config["sample-cities"]) as bar:
+            for city in config["sample-cities"]:
+                report = fetch_city_weather_data(city)
 
-            if not report: continue
+                bar.update()
 
-            latitude = report["nearest_area"][0]["latitude"]
-            longitude = report["nearest_area"][0]["longitude"]
-            dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
+                if not report: continue
 
-            if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
-                logger.info(f"Report for {city:<15} at {dt} already exists. Skipping.")
-                continue
+                latitude = report["nearest_area"][0]["latitude"]
+                longitude = report["nearest_area"][0]["longitude"]
+                dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
 
-            conn.newReport(report)
-            logger.info(f"Report for {city:<15} at {dt} created successfully.")
+                if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
+                    #logger.info(f"Report for {city:<15} at {dt} already exists. Skipping.")
+                    continue
+
+                conn.newReport(report)
+                #logger.info(f"Report for {city:<15} at {dt} created successfully.")
+        logger.info(str(bar))
 
 if __name__ == '__main__':
     # Create an ArgumentParser object to parse command-line arguments

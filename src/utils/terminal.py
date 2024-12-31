@@ -52,6 +52,7 @@ if config["logger"]["tofile"]:
     logfile = logging.FileHandler(r"{}//{}.log".format(
         config["logger"]['dir'],
         datetime.now().strftime(config["logger"]["filename_datefmt"])),
+        encoding="utf-8"
     )
     logfile.setFormatter(file_formatter)
 

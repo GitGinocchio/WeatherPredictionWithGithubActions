@@ -13,10 +13,10 @@ from utils.terminal import getlogger
 logger = getlogger()
 
 def validate(
-        model: Type[nn.Module], 
-        val_dataloader: Type[DataLoader], 
+        model: nn.Module, 
+        val_dataloader: DataLoader, 
         device: torch.device, 
-        loss_fn: Type[torch.nn.MSELoss]
+        loss_fn: nn.Module
         ) -> torch.Tensor:
     """
     performs cross-validation on model with validation dataloader
@@ -42,12 +42,12 @@ def validate(
     return val_loss
 
 def train(
-        train_dataloader: Type[DataLoader], 
-        val_dataloader: Type[DataLoader], 
-        model: Type[nn.Module], 
+        train_dataloader: DataLoader, 
+        val_dataloader: DataLoader, 
+        model: nn.Module, 
         device: torch.device, 
-        loss_fn: Type[torch.nn.MSELoss], 
-        optimizer: Type[torch.optim.Adam],
+        loss_fn: nn.Module, 
+        optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler.LRScheduler, 
         num_epochs: int, 
         model_name: str, 
@@ -87,7 +87,7 @@ def train(
     train_loss_list = []
     val_loss_list = []
     best_val_loss = np.inf
-    patience_counter = 0 if not disable_patience else float("-inf")
+    patience_counter = 0
     for epoch_idx in range(num_epochs):
         model.train()
         if patience_counter >= patience:
@@ -115,18 +115,17 @@ def train(
                 best_val_loss = val_loss
                 patience_counter = 0
                 torch.save(model.state_dict(),Path(save_dir).joinpath(model_name))
-            else:
-                if not disable_patience:
-                    patience_counter += 1
+            elif not disable_patience:
+                patience_counter += 1
 
     return train_loss_list, val_loss_list
 
 def test(
         model: nn.Module, 
         model_name: str, 
-        test_dataloader: Type[DataLoader], 
+        test_dataloader: DataLoader, 
         device: torch.device, 
-        loss_fn: torch.nn.MSELoss, 
+        loss_fn: nn.Module, 
         save_dir: Path
         ) -> float:
     """

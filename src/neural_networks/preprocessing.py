@@ -8,8 +8,7 @@ def encode_label(df : pd.DataFrame, column : str, inplace : bool = True) -> Labe
 
     return encoder
 
-def apply_scaler(df : pd.DataFrame, columns : list[str], scalerType : MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler, inplace : bool = True) -> MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler:
-    scaler = scalerType()
+def apply_scaler(df : pd.DataFrame, columns : list[str], scaler : MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler, inplace : bool = True) -> MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler:
 
     for column in columns:
         df[f"{column}_scaled" if not inplace else column] = scaler.fit_transform(df[[column]])

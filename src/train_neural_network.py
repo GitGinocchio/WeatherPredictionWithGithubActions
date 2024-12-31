@@ -35,8 +35,8 @@ region_encoder = encode_label(df, "region")
 city_encoder = encode_label(df, "city")
 
 logger.info(f"Applying scalers")
-min_max_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], MinMaxScaler)
-standard_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], StandardScaler)
+min_max_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], MinMaxScaler())
+standard_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], StandardScaler())
 
 X = df[['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude']]
 y = df[["feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"]]
@@ -58,7 +58,7 @@ test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True)
 input_size = X_train_tensor.shape[1]
 output_size = y_train_tensor.shape[1]
 hidden_size = 128
-num_layers = 1
+num_layers = 3
 learning_rate = 0.001
 weight_decay = 1e-5
 patience = 100
