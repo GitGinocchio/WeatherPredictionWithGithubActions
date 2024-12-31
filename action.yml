@@ -52,10 +52,7 @@ runs:
       shell: bash
       env:
         CITIES: ${{ inputs.cities }}
-      run: |
-        UPDATE=$(python src/collect_weather_data.py
-        ) || exit 1
-        echo "markdown=$(echo $UPDATE)" >> $GITHUB_OUTPUT
+      run: python src/collect_weather_data.py
     
     - name: Commit Changes
       shell: bash
