@@ -62,7 +62,7 @@ runs:
 
         git add . 
 
-        if git diff-index --quiet HEAD --; then
+        if git diff-index --exit-code HEAD --; then
             echo "Nessun cambiamento rilevato, niente da aggiornare."
         else
             git commit -m "${{ inputs.commit_message }}"
