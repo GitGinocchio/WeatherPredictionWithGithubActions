@@ -62,10 +62,10 @@ runs:
 
         git add . 
 
-        if ! git diff --name-only | grep -q .; then
-            echo "Nessun cambiamento rilevato, niente da aggiornare."
+        if ! git diff-index --quiet HEAD --; then
+          git commit -m "${{ inputs.commit_message }}"
+          git push origin ${{ inputs.branch_name }}
         else
-            git commit -m "${{ inputs.commit_message }}"
-            git push origin ${{ inputs.branch_name }}
+          echo "Nessun cambiamento rilevato, niente da aggiornare."
         fi
       working-directory: data
