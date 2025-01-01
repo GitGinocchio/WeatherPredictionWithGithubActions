@@ -10,7 +10,7 @@ import torch
 
 from neural_networks.preprocessing import encode_label, apply_scaler
 from neural_networks.models.lstm import LSTM
-from neural_networks.training import train, test, validate
+from neural_networks.training import train, test
 from utils.terminal import getlogger
 from utils.db import Database
 
