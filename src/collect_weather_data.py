@@ -45,7 +45,7 @@ def main(args : Namespace) -> None:
         logger.error("No cities were specified. Please set the --cities flag or CITIES environment variable")
         sys.exit(1)
 
-    logger.info(f"Starting to fetch weather data for cities: {", ".join(cities)}")
+    logger.info(f"Starting to fetch weather data for cities: {', '.join(cities)}")
     with db as conn:
         for city in cities:
             report = fetch_city_weather_data(city)
