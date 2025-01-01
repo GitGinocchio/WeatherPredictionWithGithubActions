@@ -74,7 +74,7 @@ if __name__ == '__main__':
         '-c', '--cities',
         nargs="*",
         type=lambda str: str.strip().replace("_"," "),
-        required=True,
+        required=False,
         default=None,
         help='Cities for which to collect weather data. Must be passed as a comma-separated, underscore spaced list of cities, or as an environment variable named CITIES.'
     )
