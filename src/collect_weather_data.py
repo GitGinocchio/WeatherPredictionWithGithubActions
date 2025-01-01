@@ -9,8 +9,7 @@ import sys
 import os
 
 from utils.db import Database
-from utils.terminal import getlogger
-from utils.config import config
+from utils.terminal import getlogger, Level
 
 logger = getlogger()
 db = Database()
@@ -19,7 +18,7 @@ session = requests.Session()
 
 def fetch_city_weather_data(city : str) -> dict | None:
     try:
-        #logger.info(f"Fetching weather data for city: {city}")
+        logger.debug(f"Fetching weather data for city: {city}")
         response = session.get(f'https://wttr.in/{city}?format=j1', timeout=10, allow_redirects=False)
         
         assert response.headers['Content-Type'] == 'application/json', f"Expected Content-Type to be application/json, but got {response.headers['Content-Type']}"
@@ -38,40 +37,57 @@ def fetch_city_weather_data(city : str) -> dict | None:
         return report
 
 def main(args : Namespace) -> None:
+    if args.cities:
+        cities : list[str] = args.cities
+    elif (environ_cities:=os.environ.get("CITIES", None)):
+        cities = [city.strip() for city in environ_cities.split(",")]
+    else:
+        logger.error("No cities were specified. Please set the --cities flag or CITIES environment variable")
+        sys.exit(1)
 
-    logging_queue : list[str] = []
-
+    logger.info(f"Starting to fetch weather data for cities: {", ".join(cities)}")
     with db as conn:
-        with tqdm(config["sample-cities"], desc="Fetching weather data", unit="cities", total=len(config["sample-cities"])) as bar:
-            for city in config["sample-cities"]:
-                report = fetch_city_weather_data(city)
+        for city in cities:
+            report = fetch_city_weather_data(city)
 
-                bar.update()
+            if not report: continue
 
-                if not report: continue
+            latitude : float = report["nearest_area"][0]["latitude"]
+            longitude : float = report["nearest_area"][0]["longitude"]
+            dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
 
-                latitude = report["nearest_area"][0]["latitude"]
-                longitude = report["nearest_area"][0]["longitude"]
-                dt = datetime.strptime(report["current_condition"][0]["localObsDateTime"], "%Y-%m-%d %I:%M %p")
+            if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
+                logger.info(f"Report for {city:<15} at {dt} already exists. Skipping.")
+                continue
 
-                if conn.hasWeatherCondition(latitude, longitude, dt.year, dt.month, dt.day, dt.hour, dt.minute):
-                    logging_queue.append(f"Report for {city:<15} at {dt} already exists. Skipping.")
-                    continue
-
-                conn.newReport(report)
-                logging_queue.append(f"Report for {city:<15} at {dt} created successfully.")
-        
-        logger.info(str(bar))
-        for log in logging_queue:
-            logger.info(log)
-
+            conn.newReport(report)
+            logger.info(f"Report for {city:<15} at {dt} created successfully.")
 
 if __name__ == '__main__':
-    # Create an ArgumentParser object to parse command-line arguments
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description="Collect weather data for specified cities",
+        epilog="For more information, visit https://github.com/GitGinocchio/WeatherPredictionWithGithubActions",
+        add_help=True,
+    )
 
-    # Parse the command-line arguments and store them in the 'args' variable
+    parser.add_argument(
+        '-c', '--cities',
+        nargs="*",
+        type=lambda str: str.strip().replace("_"," "),
+        required=True,
+        default=None,
+        help='Cities for which to collect weather data. Must be passed as a comma-separated, underscore spaced list of cities, or as an environment variable named CITIES.'
+    )
+
+    parser.add_argument(
+        '-ll', '--log-level',
+        type=str,
+        help="Set the log level for the logger",
+        default="INFO"
+    )
+
     args = parser.parse_args()
 
-    # Call the main function with the parsed arguments
+    logger.setLevel(Level[args.log_level].value[0])
+
     main(args)

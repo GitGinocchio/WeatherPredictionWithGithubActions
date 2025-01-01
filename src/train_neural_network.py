@@ -35,8 +35,8 @@ region_encoder = encode_label(df, "region")
 city_encoder = encode_label(df, "city")
 
 logger.info(f"Applying scalers")
-min_max_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], MinMaxScaler())
-standard_scaler = apply_scaler(df, ['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude', "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], StandardScaler())
+min_max_scaler = apply_scaler(df, ["feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], MinMaxScaler())
+standard_scaler = apply_scaler(df, ["feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], StandardScaler())
 
 X = df[['year', 'month', 'day','hour', 'minute', 'latitude', 'longitude']]
 y = df[["feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"]]
