@@ -110,10 +110,10 @@ X = df[[
     'longitude', 
     'date_of_year', 
     'time_of_day', 
-    #'lat_to_eq', 
+    'lat_to_eq', 
     #'lon_to_me',
-    'lat_band', 
-    #'lon_range'
+    #'lat_band', 
+    'lon_range'
 ]]
 
 y = df[[
@@ -145,8 +145,8 @@ y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).to(device)
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
-train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True)
+train_dataloader = DataLoader(train_dataset, batch_size=256, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=256, shuffle=True)
 
 input_size = X_train_tensor.shape[1]
 output_size = y_train_tensor.shape[1]
@@ -159,7 +159,7 @@ num_epochs = 10000
 disable_patience = False
 
 model = LSTM(input_size, output_size, hidden_size, num_layers).to(device)
-optimizer = optim.Adam(model.parameters(),lr=learning_rate, weight_decay=weight_decay)
+optimizer = optim.Adam(model.parameters(),lr=learning_rate, weight_decay=weight_decay, amsgrad=True)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=patience, factor=0.5)
 loss = nn.MSELoss()
 

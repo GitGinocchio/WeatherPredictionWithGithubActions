@@ -83,7 +83,7 @@ def train(
     val_loss_list = []
     best_val_loss = np.inf
     patience_counter = 0
-    for epoch_idx in tqdm(range(num_epochs), desc="Epochs", unit="epoch"):
+    for epoch_idx in range(num_epochs):
         model.train()
         if patience_counter >= patience:
             break
@@ -104,8 +104,6 @@ def train(
             val_loss_list.append((epoch_idx+1, float(val_loss.cpu().detach())))
 
             logger.info(f"Epoch: {epoch_idx+1:>{len(str(num_epochs))}}/{num_epochs} (Train loss: {tr_epoch_loss:.5f}, Validation loss: {val_loss:.5f})")
-
-            sys.stdout.write("\033[2A]")
 
             scheduler.step(val_loss)
 
