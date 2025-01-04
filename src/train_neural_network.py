@@ -28,7 +28,42 @@ logger.info(f"Current Device: {device} (index: {device.index} type: {device.type
 
 db = Database()
 
-df = pd.read_sql("SELECT * FROM weather", db.connection)
+weather_df = pd.read_sql("SELECT * FROM weather", db.connection)
+hourly_df = pd.read_sql("""
+                        SELECT year, 
+                               month,
+                               day,
+                               time AS hour,
+                               0 AS minute,
+                               temp,
+                               feelsLike,
+                               tempF,
+                               feelsLikeF,
+                               cloudcover,
+                               humidity,
+                               uvIndex,
+                               precip,
+                               precipInches,
+                               pressure,
+                               pressureInches,
+                               visibility,
+                               visibilityMiles,
+                               weatherCode,
+                               weatherDescription,
+                               winddir,
+                               winddir16Point,
+                               windspeed,
+                               windspeedMiles,
+                               "" as city,
+                               "" as country,
+                               "" as region,
+                               latitude,
+                               longitude,
+                               0 AS population
+                        FROM hourly""", 
+                        db.connection)
+
+df = pd.concat([weather_df, hourly_df])
 
 logger.info(f"Data loaded successfully. Shape: {df.shape}")
 
@@ -97,9 +132,6 @@ y = df[[
     "weather_index", 
     "sky_index"
 ]]
-
-print(X.head(50))
-print(y.head(50))
 
 input("Press Enter to continue...")
 

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Type
 from tqdm import tqdm
 import numpy as np
 import sys
@@ -28,17 +27,13 @@ def validate(
     device     -- torch device
     loss_fn    -- Mean Squared Error torch.nn.MSEloss
     """
-    logger.debug("Validating model")
-    logger.debug("Setting model to evaluation mode")
     model.eval()
     val_loss = 0
-    logger.debug("Starting evaluation")
     for batch_in, batch_out in val_dataloader:
         pred = model(batch_in.to(device))
         loss = loss_fn(pred, batch_out.to(device))
         val_loss += loss
     val_loss /= len(val_dataloader)
-    logger.debug("Validation complete. Loss: {val_loss:.4f}")
     return val_loss
 
 def train(
@@ -88,7 +83,7 @@ def train(
     val_loss_list = []
     best_val_loss = np.inf
     patience_counter = 0
-    for epoch_idx in range(num_epochs):
+    for epoch_idx in tqdm(range(num_epochs), desc="Epochs", unit="epoch"):
         model.train()
         if patience_counter >= patience:
             break
@@ -101,6 +96,7 @@ def train(
                 train_loss.backward()
                 optimizer.step()
                 tr_epoch_loss += train_loss
+            
             tr_epoch_loss /= len(train_dataloader)
             train_loss_list.append((epoch_idx + 1, float(tr_epoch_loss.cpu().detach())))
             
@@ -108,6 +104,8 @@ def train(
             val_loss_list.append((epoch_idx+1, float(val_loss.cpu().detach())))
 
             logger.info(f"Epoch: {epoch_idx+1:>{len(str(num_epochs))}}/{num_epochs} (Train loss: {tr_epoch_loss:.5f}, Validation loss: {val_loss:.5f})")
+
+            sys.stdout.write("\033[2A]")
 
             scheduler.step(val_loss)
 

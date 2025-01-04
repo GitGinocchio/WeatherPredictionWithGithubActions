@@ -52,4 +52,4 @@ def create_feature(df: pd.DataFrame, feature_name: str, func: Callable[[pd.Serie
 
     df[feature_name] = df.apply(lambda row: func(row), axis=1)
 
-    logger.info(f"Created Feature named '{feature_name}': {inspect.getsource(func).strip()}")
+    logger.info(f"Created Feature named '{feature_name}': lambda{inspect.getsource(func).strip().split("lambda")[-1]}")
