@@ -17,7 +17,7 @@ pytz==2024.2
 requests==2.32.3
 scikit-learn==1.6.0
 scipy==1.15.1
-setuptools==75.7.0
+setuptools==75.8.0
 six==1.17.0
 sympy==1.13.1
 threadpoolctl==3.5.0
