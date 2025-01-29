@@ -135,7 +135,7 @@ class Database:
             area["latitude"],
             area["longitude"],
 
-            area["population"]
+            area.get("population",0)
         ))
 
     def _newDaily(self, daily : dict, area : dict) -> None:
