@@ -2,6 +2,7 @@ from argparse import ArgumentParser, Namespace
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from tqdm import tqdm
+import traceback
 import requests
 import asyncio
 import json
@@ -28,10 +29,10 @@ def fetch_city_weather_data(city : str) -> dict | None:
     except (requests.exceptions.ConnectTimeout, 
             requests.exceptions.ReadTimeout, 
             requests.exceptions.SSLError, 
-            json.JSONDecodeError, 
+            json.JSONDecodeError,
             requests.exceptions.ConnectionError,
             AssertionError) as e:
-        logger.error(e)
+        logger.error(traceback.format_exc())
         return None
     else:
         return report
@@ -46,11 +47,15 @@ def main(args : Namespace) -> None:
         sys.exit(1)
 
     logger.info(f"Starting to fetch weather data for cities: {', '.join(cities)}")
+
+    errors = 0
     with db as conn:
         for city in cities:
             report = fetch_city_weather_data(city)
 
-            if not report: continue
+            if not report: 
+                errors += 1
+                continue
 
             latitude : float = report["nearest_area"][0]["latitude"]
             longitude : float = report["nearest_area"][0]["longitude"]
@@ -62,6 +67,8 @@ def main(args : Namespace) -> None:
 
             conn.newReport(report)
             logger.info(f"Report for {city:<15} at {dt} created successfully.")
+
+    sys.exit(errors)
 
 if __name__ == '__main__':
     parser = ArgumentParser(
