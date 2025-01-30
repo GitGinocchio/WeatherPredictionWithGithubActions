@@ -21,9 +21,9 @@ setuptools==75.8.0
 six==1.17.0
 sympy==1.13.1
 threadpoolctl==3.5.0
-torch==2.5.1                #+cu124
-torchaudio==2.5.1           #+cu124
-torchvision==0.20.1         #+cu124
+torch==2.6.0                #+cu124
+torchaudio==2.6.0           #+cu124
+torchvision==0.21.0         #+cu124
 tqdm==4.67.1
 typing_extensions==4.12.2
 tzdata==2025.1
