@@ -2,7 +2,7 @@ name: Collect Weather Data
 
 on:
   schedule:
-    - cron: '0/30 * * * *' # See https://crontab.guru/#0_0/2_*_*_* for help
+    - cron: '0 0/1 * * *' # See https://crontab.guru/#0_0/2_*_*_* for help
 
   workflow_dispatch: # Permette l'avvio manuale del workflow
 
