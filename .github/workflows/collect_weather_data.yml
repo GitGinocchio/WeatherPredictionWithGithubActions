@@ -7,21 +7,11 @@ on:
   workflow_dispatch: # Permette l'avvio manuale del workflow
 
 jobs:
-  collect_test_weather_data:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Collect Weather Data Test Dataset
-        uses: GitGinocchio/weather-prediction-github-action@actions-collect
-        with:
-          branch_name: data-v1
-          cities: New York, London, Tokyo, Pechino, Sydney, San Francisco, Berlino, Buenos Aires, Singapore, Rio de Janeiro, Miami, Dubai, Las Vegas , Marrakech, Helsinki , Oslo, Anchorage, New Orleans, Mumbai, Buffalo, Roma, Milano, Napoli, Torino, Trento, Bormio, Genova, Catania, Bologna, Firenze, Bolzano, Siena
-  
   collect_prod_weather_data:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Collect Weather Data Prod. Dataset 01.01.2025 -> ...
+      - name: Collect Weather Data Prod. Dataset 01.01.2025 -> Now
         uses: GitGinocchio/weather-prediction-github-action@actions-collect
         with:
           branch_name: data-01-01-2025
