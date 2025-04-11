@@ -25,6 +25,6 @@ torch==2.6.0                #+cu124 If you want to install the cuda version see 
 torchaudio==2.6.0           #+cu124 If you want to install the cuda version see Makefile
 torchvision==0.21.0         #+cu124 If you want to install the cuda version see Makefile
 tqdm==4.67.1
-typing_extensions==4.13.1
+typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.3.0
