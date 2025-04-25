@@ -19,9 +19,9 @@ scikit-learn==1.6.1
 scipy==1.15.2
 setuptools==79.0.0
 six==1.17.0
-sympy==1.13.1
+sympy==1.13.3
 threadpoolctl==3.6.0
-torch==2.6.0                #+cu124 If you want to install the cuda version see Makefile
+torch==2.7.0                #+cu124 If you want to install the cuda version see Makefile
 torchaudio==2.7.0           #+cu124 If you want to install the cuda version see Makefile
 torchvision==0.21.0         #+cu124 If you want to install the cuda version see Makefile
 tqdm==4.67.1
