@@ -1,5 +1,5 @@
 certifi==2025.4.26
-charset-normalizer==3.4.1
+charset-normalizer==3.4.2
 colorama==0.4.6
 filelock==3.18.0
 fsspec==2025.3.2
