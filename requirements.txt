@@ -21,7 +21,7 @@ setuptools==80.9.0
 six==1.17.0
 sympy==1.13.3
 threadpoolctl==3.6.0
-torch==2.7.0                #+cu124 If you want to install the cuda version see Makefile
+torch==2.9.0                #+cu124 If you want to install the cuda version see Makefile
 torchaudio==2.7.0           #+cu124 If you want to install the cuda version see Makefile
 torchvision==0.22.0         #+cu124 If you want to install the cuda version see Makefile
 tqdm==4.67.1
