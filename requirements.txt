@@ -14,14 +14,14 @@ pandas==2.3.3
 pillow==11.2.1
 python-dateutil==2.9.0.post0
 pytz==2025.2
-requests==2.32.3
+requests==2.32.4
 scikit-learn==1.6.1
 scipy==1.15.2
 setuptools==80.9.0
 six==1.17.0
 sympy==1.13.3
 threadpoolctl==3.6.0
-torch==2.7.0                #+cu124 If you want to install the cuda version see Makefile
+torch==2.7.1                #+cu124 If you want to install the cuda version see Makefile
 torchaudio==2.7.0           #+cu124 If you want to install the cuda version see Makefile
 torchvision==0.22.0         #+cu124 If you want to install the cuda version see Makefile
 tqdm==4.67.1
