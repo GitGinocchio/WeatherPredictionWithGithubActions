@@ -27,4 +27,4 @@ torchvision==0.22.0         #+cu124 If you want to install the cuda version see 
 tqdm==4.67.1
 typing_extensions==4.13.2
 tzdata==2025.2
-urllib3==2.4.0
+urllib3==2.5.0
