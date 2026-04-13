@@ -3,25 +3,51 @@ from functools import lru_cache
 from typing import Any, Callable
 import pandas as pd
 import inspect
+import pickle
+import os
 
 from utils.terminal import getlogger
 
 logger = getlogger()
 
 def encode_label(df : pd.DataFrame, column : str, inplace : bool = True) -> LabelEncoder:
-    encoder = LabelEncoder()
+    if os.path.exists(f'{column}_labels.pkl'):
+        with open(f'{column}_labels.pkl', 'rb') as f: 
+            encoder = pickle.load(f)
+    else:
+        encoder = LabelEncoder()
+
     df[f"{column}_encoded" if not inplace else column] = encoder.fit_transform(df[column])
+
+    with open(f'{column}_labels.pkl', 'wb') as f: pickle.dump(encoder, f)
 
     logger.info(f"Encoded Column '{column}' with LabelEncoder")
     return encoder
 
-def apply_scaler(df : pd.DataFrame, columns : list[str], scaler : MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler, inplace : bool = True) -> MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler:
-
+def apply_scaler(df : pd.DataFrame, columns : list[str], scaler_type : MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler, inplace : bool = True) -> list[MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler]:
+    scalers = []
+    
     for column in columns:
+        if (loaded_scaler:=load_scaler(column)) is not None:
+            scaler = loaded_scaler
+        else:
+            scaler = scaler_type()
+
         df[f"{column}_scaled" if not inplace else column] = scaler.fit_transform(df[[column]])
 
-    logger.info(f"Applied Scalar '{scaler.__class__}' to columns: {columns}")
-    return scaler
+        scalers.append(scaler)
+        with open(f'{column}_scaler.pkl', 'wb') as f: pickle.dump(scaler, f)
+
+        logger.info(f"Applied Scalar '{scaler.__class__}' to column: {column}")
+    return scalers
+
+def load_scaler(column : str) -> MinMaxScaler | StandardScaler | MaxAbsScaler | RobustScaler | None:
+    if os.path.exists(f'{column}_scaler.pkl'):
+        with open(f'{column}_scaler.pkl', 'rb') as f: 
+            scaler = pickle.load(f)
+        return scaler
+    else:
+        return None
 
 def apply_onehot_encoder(df: pd.DataFrame, columns: list[str], inplace: bool = True) -> OneHotEncoder:
     encoder = OneHotEncoder(handle_unknown="error")

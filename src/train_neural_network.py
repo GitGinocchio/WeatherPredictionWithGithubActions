@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 from torch.utils.data import DataLoader, TensorDataset
+from neural_networks.prediction import predict
 import torch.optim as optim
 import torch.nn as nn
 import torch
@@ -18,6 +19,7 @@ from neural_networks.models.lstm import LSTM
 from neural_networks.training import train, test
 from utils.terminal import getlogger
 from utils.db import Database
+import pickle
 
 logger = getlogger()
 
@@ -29,6 +31,7 @@ logger.info(f"Current Device: {device} (index: {device.index} type: {device.type
 db = Database()
 
 weather_df = pd.read_sql("SELECT * FROM weather", db.connection)
+
 hourly_df = pd.read_sql("""
                         SELECT year, 
                                month,
@@ -64,6 +67,7 @@ hourly_df = pd.read_sql("""
                         db.connection)
 
 df = pd.concat([weather_df, hourly_df])
+#df = weather_df
 
 logger.info(f"Data loaded successfully. Shape: {df.shape}")
 
@@ -88,16 +92,18 @@ create_feature(df, "lon_range", lambda row: int((row["longitude"] / 60) % 2))
 
 logger.info(f"Applying scalers")
 
-min_max_scaler = apply_scaler(df, 
+scalers = apply_scaler(df, 
     [
     #"date_of_year", "time_of_day", 
     #"lat_to_eq", "lon_to_me",
     #"lat_band", "lon_range",
     "heat_index", "weather_index", "sky_index", 
     "feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", 
-    "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], 
-    MinMaxScaler()
+    "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"
+    ], 
+    MinMaxScaler
 )
+
 #standard_scaler = apply_scaler(df, ["feelsLike", "cloudcover", "humidity", "precip", "pressure", "temp", "uvIndex", "visibility", "windspeed", "weatherDescription", "winddir16Point"], StandardScaler())
 
 X = df[[
@@ -111,8 +117,8 @@ X = df[[
     'date_of_year', 
     'time_of_day', 
     'lat_to_eq', 
-    #'lon_to_me',
-    #'lat_band', 
+    'lon_to_me',
+    'lat_band', 
     'lon_range'
 ]]
 
@@ -128,9 +134,9 @@ y = df[[
     "windspeed", 
     #"weatherDescription",
     #"winddir16Point", 
-    "heat_index", 
-    "weather_index", 
-    "sky_index"
+    #"heat_index", 
+    #"weather_index", 
+    #"sky_index"
 ]]
 
 input("Press Enter to continue...")
